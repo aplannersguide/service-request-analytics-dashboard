@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Production build
+dist/
+
+# CSV & Data Exports (Strictly exclude sensitive municipal datasets)
+*.csv
+*.tsv
+*.xlsx
+
+# Backups & Archives
+backups/
+*.zip
+*.tar.gz
+
+# System & Log Files
+.DS_Store
+*.log
