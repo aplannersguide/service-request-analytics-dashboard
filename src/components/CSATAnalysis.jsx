@@ -181,8 +181,8 @@ export default function CSATAnalysis({ requests }) {
       {/* Active Drill-Down Banner */}
       {isChartFilterActive && (
         <div style={{
-          background: 'rgba(99, 102, 241, 0.12)',
-          border: '1px solid rgba(99, 102, 241, 0.3)',
+          background: 'rgba(38, 70, 119, 0.08)',
+          border: '1px solid rgba(38, 70, 119, 0.25)',
           borderRadius: 'var(--radius-sm)',
           padding: '10px 16px',
           display: 'flex',
@@ -192,7 +192,7 @@ export default function CSATAnalysis({ requests }) {
           gap: '12px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', fontSize: '0.85rem' }}>
-            <span style={{ fontWeight: 700, color: 'var(--accent-indigo)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontWeight: 700, color: 'var(--rva-navy)', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Filter size={14} /> CROSS-CHART DRILL-DOWN ACTIVE:
             </span>
             {activeStarFilter !== 'ALL' && (
@@ -226,7 +226,7 @@ export default function CSATAnalysis({ requests }) {
         {/* CSAT Rating Distribution */}
         <div className="glass-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-purple)', fontWeight: 700 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
               <Award size={18} /> CSAT RATING DISTRIBUTION (CROSS-FILTERS PAGE)
             </div>
             {activeStarFilter !== 'ALL' && (
@@ -251,8 +251,8 @@ export default function CSATAnalysis({ requests }) {
                   tooltip: { callbacks: { afterBody: () => '💡 Click to cross-filter driver chart & comments' } }
                 },
                 scales: {
-                  x: { ticks: { color: '#94a3b8', font: { size: 11 } } },
-                  y: { ticks: { color: '#94a3b8', precision: 0 } }
+                  x: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569', font: { size: 11 } } },
+                  y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569', precision: 0 } }
                 }
               }} 
             />
@@ -262,7 +262,7 @@ export default function CSATAnalysis({ requests }) {
         {/* Low CSAT Drivers Breakdown */}
         <div className="glass-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--status-danger)', fontWeight: 700 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-red)', fontWeight: 700 }}>
               <AlertTriangle size={18} /> TOP LOW CSAT DRIVERS (CROSS-FILTERS PAGE)
             </div>
             {activeLowTypeFilter && (
@@ -288,8 +288,8 @@ export default function CSATAnalysis({ requests }) {
                   tooltip: { callbacks: { afterBody: () => '💡 Click to cross-filter rating chart & comments' } }
                 },
                 scales: {
-                  x: { ticks: { color: '#94a3b8', precision: 0 } },
-                  y: { ticks: { color: '#94a3b8', font: { size: 11 } } }
+                  x: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569', precision: 0 } },
+                  y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569', font: { size: 11 } } }
                 }
               }}
             />
@@ -300,7 +300,7 @@ export default function CSATAnalysis({ requests }) {
       {/* FEATURE 4: Automated Complaint Keyword / Theme Badges */}
       {topComplaintKeywords.length > 0 && (
         <div className="glass-card" style={{ padding: '14px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--status-danger)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--rva-red)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Tag size={13} /> AUTOMATED COMPLAINT KEYWORD THEMES (CLICK TO FILTER COMMENTS)
           </div>
 
@@ -314,7 +314,8 @@ export default function CSATAnalysis({ requests }) {
                   style={{
                     padding: '4px 10px',
                     fontSize: '0.75rem',
-                    borderColor: isSelected ? 'var(--status-danger)' : 'rgba(239, 68, 68, 0.3)',
+                    borderColor: isSelected ? 'var(--rva-red)' : 'rgba(170, 36, 42, 0.3)',
+                    background: isSelected ? 'var(--rva-red)' : '#ffffff',
                     color: isSelected ? 'white' : 'var(--text-main)'
                   }}
                   onClick={() => setActiveKeywordFilter(prev => prev === word ? null : word)}
@@ -332,7 +333,7 @@ export default function CSATAnalysis({ requests }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--status-warning)', fontWeight: 700 }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
                 <MessageSquare size={18} /> CUSTOMER SURVEY FEEDBACK ({filteredComments.length} COMMENTS)
               </span>
             </div>
@@ -368,7 +369,7 @@ export default function CSATAnalysis({ requests }) {
           </button>
           <button
             className={`btn ${activeStarFilter === 'LOW' ? 'btn-primary' : 'btn-outline'}`}
-            style={{ padding: '4px 10px', fontSize: '0.75rem', borderColor: 'var(--status-danger)', color: activeStarFilter === 'LOW' ? 'white' : 'var(--status-danger)' }}
+            style={{ padding: '4px 10px', fontSize: '0.75rem', borderColor: 'var(--rva-red)', color: activeStarFilter === 'LOW' ? 'white' : 'var(--rva-red)', background: activeStarFilter === 'LOW' ? 'var(--rva-red)' : '#ffffff' }}
             onClick={() => setActiveStarFilter('LOW')}
           >
             ⚠️ Dissatisfied (&lt; 3★)
@@ -396,8 +397,8 @@ export default function CSATAnalysis({ requests }) {
               <div 
                 key={idx} 
                 style={{ 
-                  background: 'rgba(15, 23, 42, 0.6)', 
-                  border: item.csat && item.csat < 3 ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid rgba(255, 255, 255, 0.06)', 
+                  background: '#f8fafc', 
+                  border: item.csat && item.csat < 3 ? '1px solid rgba(170, 36, 42, 0.35)' : '1px solid #e2e8f0', 
                   borderRadius: 'var(--radius-sm)', 
                   padding: '14px',
                   display: 'flex',
@@ -406,7 +407,7 @@ export default function CSATAnalysis({ requests }) {
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent-blue)' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--rva-navy)' }}>
                     [{item.dept}] #{item.reqId} • {item.unit}
                   </span>
                   <span className={`badge ${item.csat && item.csat >= 4 ? 'badge-success' : item.csat && item.csat < 3 ? 'badge-danger' : 'badge-warning'}`}>

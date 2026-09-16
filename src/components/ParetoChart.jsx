@@ -89,15 +89,16 @@ export default function ParetoChart({ requests }) {
     plugins: {
       legend: {
         position: 'top',
-        labels: { color: '#f8fafc', font: { family: 'Inter', size: 12, weight: '600' } }
+        labels: { color: '#282938', font: { family: 'Inter', size: 12, weight: '600' } }
       },
       tooltip: {
-        backgroundColor: 'rgba(40, 41, 56, 0.95)',
-        titleColor: '#7fb1e5',
-        bodyColor: '#f8fafc',
-        borderColor: 'rgba(127, 177, 229, 0.25)',
+        backgroundColor: '#ffffff',
+        titleColor: '#264677',
+        bodyColor: '#282938',
+        borderColor: '#e2e8f0',
         borderWidth: 1,
         padding: 12,
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
         callbacks: {
           label: (context) => {
             if (context.dataset.type === 'line') {
@@ -110,24 +111,24 @@ export default function ParetoChart({ requests }) {
     },
     scales: {
       x: {
-        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-        ticks: { color: '#cbd5e1', font: { family: 'Inter', size: 11 }, maxRotation: 35 }
+        grid: { color: 'rgba(0, 0, 0, 0.05)' },
+        ticks: { color: '#475569', font: { family: 'Inter', size: 11 }, maxRotation: 35 }
       },
       yCount: {
         type: 'linear',
         position: 'left',
         title: { display: true, text: 'SLA Breach Count', color: '#AA242A', font: { size: 12, weight: 'bold' } },
-        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-        ticks: { color: '#cbd5e1', precision: 0 }
+        grid: { color: 'rgba(0, 0, 0, 0.05)' },
+        ticks: { color: '#475569', precision: 0 }
       },
       yPct: {
         type: 'linear',
         position: 'right',
         min: 0,
         max: 100,
-        title: { display: true, text: 'Cumulative Percentage (%)', color: '#7fb1e5', font: { size: 12, weight: 'bold' } },
+        title: { display: true, text: 'Cumulative Percentage (%)', color: '#264677', font: { size: 12, weight: 'bold' } },
         grid: { drawOnChartArea: false },
-        ticks: { color: '#cbd5e1', callback: (val) => `${val}%` }
+        ticks: { color: '#475569', callback: (val) => `${val}%` }
       }
     }
   };
@@ -166,7 +167,7 @@ export default function ParetoChart({ requests }) {
       {
         label: 'Target SLA (Days)',
         data: timeEntries.map(e => e.avgTarget),
-        backgroundColor: 'rgba(168, 221, 131, 0.85)',
+        backgroundColor: 'rgba(38, 70, 119, 0.75)',
         borderRadius: 4
       },
       {
@@ -184,7 +185,7 @@ export default function ParetoChart({ requests }) {
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--status-danger)', fontWeight: 700 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-red)', fontWeight: 700 }}>
               <BarChart2 size={18} /> PARETO ANALYSIS: SLA BREACH DRIVERS
             </div>
             <p style={{ fontSize: '0.825rem', color: 'var(--text-muted)', marginTop: '2px' }}>
@@ -221,7 +222,7 @@ export default function ParetoChart({ requests }) {
 
       {/* Target SLA vs Actual Days Comparison Chart (Full Width) */}
       <div className="glass-card">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-blue)', fontWeight: 700, marginBottom: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700, marginBottom: '4px' }}>
           <Clock size={18} /> TARGET SLA VS. ACTUAL RESOLUTION TIME (DAYS)
         </div>
         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
@@ -233,10 +234,10 @@ export default function ParetoChart({ requests }) {
             options={{
               responsive: true,
               maintainAspectRatio: false,
-              plugins: { legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 11 } } } },
+              plugins: { legend: { position: 'top', labels: { color: '#282938', font: { size: 11, weight: '600' } } } },
               scales: {
-                x: { ticks: { color: '#94a3b8', font: { size: 11 }, maxRotation: 25 } },
-                y: { ticks: { color: '#94a3b8' } }
+                x: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569', font: { size: 11 }, maxRotation: 25 } },
+                y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569' } }
               }
             }}
           />

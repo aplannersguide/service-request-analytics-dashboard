@@ -106,7 +106,7 @@ export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, 
             )}
 
             {/* Counts Badge */}
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', background: 'rgba(15, 23, 42, 0.6)', padding: '4px 10px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--rva-navy)', background: '#f1f5f9', padding: '4px 10px', borderRadius: '12px', border: '1px solid #cbd5e1', fontWeight: 600 }}>
               📊 {requestCount} Requests • 💬 {surveyCount} Surveys
             </span>
           </div>
@@ -130,10 +130,10 @@ export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, 
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         style={{
-          border: isDragging ? '2px dashed var(--accent-blue)' : '2px dashed var(--bg-card-border)',
+          border: isDragging ? '2px dashed var(--rva-navy)' : '2px dashed #cbd5e1',
           borderRadius: 'var(--radius-sm)',
           padding: '16px 20px',
-          background: isDragging ? 'rgba(56, 189, 248, 0.08)' : 'rgba(15, 23, 42, 0.5)',
+          background: isDragging ? 'rgba(38, 70, 119, 0.08)' : '#f8fafc',
           display: 'flex',
           justify: 'space-between',
           alignItems: 'center',
@@ -154,10 +154,10 @@ export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, 
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <div style={{
-            background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.2))',
+            background: 'rgba(38, 70, 119, 0.08)',
             padding: '10px',
             borderRadius: '10px',
-            color: 'var(--accent-blue)'
+            color: 'var(--rva-navy)'
           }}>
             <UploadCloud size={24} />
           </div>

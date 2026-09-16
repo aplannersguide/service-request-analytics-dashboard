@@ -50,11 +50,11 @@ function MultiSelectDropdown({ label, icon: Icon, options, selectedValues, onTog
           cursor: 'pointer',
           textAlign: 'left',
           width: '100%',
-          background: 'rgba(15, 23, 42, 0.85)',
-          borderColor: isOpen ? 'var(--accent-blue)' : 'rgba(255, 255, 255, 0.12)'
+          background: '#ffffff',
+          borderColor: isOpen ? 'var(--rva-navy)' : '#cbd5e1'
         }}
       >
-        <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', paddingRight: '8px' }}>
+        <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', paddingRight: '8px', color: 'var(--rva-dark)' }}>
           {displayLabel}
         </span>
         <ChevronDown size={14} style={{ color: 'var(--text-dim)', flexShrink: 0 }} />
@@ -68,12 +68,10 @@ function MultiSelectDropdown({ label, icon: Icon, options, selectedValues, onTog
           right: 0,
           minWidth: '280px',
           marginTop: '6px',
-          background: 'rgba(15, 23, 42, 0.98)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(56, 189, 248, 0.4)',
+          background: '#ffffff',
+          border: '1px solid #cbd5e1',
           borderRadius: 'var(--radius-sm)',
-          boxShadow: '0 12px 32px rgba(0, 0, 0, 0.7), 0 0 20px rgba(56, 189, 248, 0.25)',
+          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08)',
           zIndex: 9999,
           padding: '12px',
           display: 'flex',
@@ -82,11 +80,11 @@ function MultiSelectDropdown({ label, icon: Icon, options, selectedValues, onTog
           maxHeight: '320px',
           overflowY: 'auto'
         }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '6px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '6px', borderBottom: '1px solid #e2e8f0' }}>
             <button
               type="button"
               onClick={onSelectAll}
-              style={{ background: 'none', border: 'none', color: 'var(--accent-blue)', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 600 }}
+              style={{ background: 'none', border: 'none', color: 'var(--rva-navy)', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 700 }}
             >
               Select All
             </button>
@@ -110,12 +108,12 @@ function MultiSelectDropdown({ label, icon: Icon, options, selectedValues, onTog
                   alignItems: 'flex-start',
                   gap: '10px',
                   fontSize: '0.85rem',
-                  color: 'var(--text-main)',
+                  color: 'var(--rva-dark)',
                   cursor: 'pointer',
                   padding: '8px 10px',
                   borderRadius: '6px',
-                  background: checked ? 'rgba(56, 189, 248, 0.15)' : 'transparent',
-                  border: checked ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid transparent',
+                  background: checked ? 'rgba(38, 70, 119, 0.08)' : 'transparent',
+                  border: checked ? '1px solid rgba(38, 70, 119, 0.25)' : '1px solid transparent',
                   transition: 'var(--transition-smooth)'
                 }}
               >
@@ -123,7 +121,7 @@ function MultiSelectDropdown({ label, icon: Icon, options, selectedValues, onTog
                   type="checkbox"
                   checked={checked}
                   onChange={() => onToggle(opt)}
-                  style={{ cursor: 'pointer', accentColor: 'var(--accent-blue)', width: '14px', height: '14px', marginTop: '2px', flexShrink: 0 }}
+                  style={{ cursor: 'pointer', accentColor: 'var(--rva-navy)', width: '14px', height: '14px', marginTop: '2px', flexShrink: 0 }}
                 />
                 <span style={{ flex: 1, whiteSpace: 'normal', wordBreak: 'break-word', lineHeight: '1.35', fontWeight: checked ? 600 : 400 }}>
                   {opt}
@@ -173,7 +171,7 @@ export default function FilterToolbar({
   return (
     <div className="glass-card" style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '14px', position: 'relative', zIndex: 100, overflow: 'visible' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-blue)', fontWeight: 700, fontSize: '0.9rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700, fontSize: '0.9rem' }}>
           <Filter size={16} /> GLOBAL FILTER TOOLBAR
         </div>
         
@@ -245,7 +243,7 @@ export default function FilterToolbar({
             className="select-input" 
             value={statusFilter} 
             onChange={(e) => onStatusFilterChange(e.target.value)}
-            style={{ width: '100%', cursor: 'pointer', background: 'rgba(15, 23, 42, 0.85)' }}
+            style={{ width: '100%', cursor: 'pointer' }}
           >
             <option value="ALL">All Statuses</option>
             <option value="BACKLOG">Active Backlog Only</option>
@@ -263,7 +261,7 @@ export default function FilterToolbar({
             className="select-input" 
             value={datePreset} 
             onChange={(e) => onDatePresetChange(e.target.value)}
-            style={{ width: '100%', cursor: 'pointer', background: 'rgba(15, 23, 42, 0.85)' }}
+            style={{ width: '100%', cursor: 'pointer' }}
           >
             <option value="ALL">All Time</option>
             <option value="LAST_MONTH">Last Month (July 2026)</option>
@@ -282,7 +280,7 @@ export default function FilterToolbar({
             className="select-input" 
             value={dateFilterField} 
             onChange={(e) => onDateFilterFieldChange(e.target.value)}
-            style={{ width: '100%', cursor: 'pointer', background: 'rgba(15, 23, 42, 0.85)', color: 'var(--accent-blue)' }}
+            style={{ width: '100%', cursor: 'pointer', color: 'var(--rva-navy)', fontWeight: 600 }}
           >
             <option value="closed">Closed Date (SLA & CSAT)</option>
             <option value="opened">Opened Date (Intake & Backlog)</option>
@@ -320,7 +318,7 @@ export default function FilterToolbar({
 
       {/* Custom Date Pickers when CUSTOM date preset selected */}
       {datePreset === 'CUSTOM' && (
-        <div style={{ display: 'flex', gap: '16px', marginTop: '4px', background: 'rgba(15, 23, 42, 0.6)', padding: '12px', borderRadius: 'var(--radius-sm)' }}>
+        <div style={{ display: 'flex', gap: '16px', marginTop: '4px', background: '#f8fafc', border: '1px solid #e2e8f0', padding: '12px', borderRadius: 'var(--radius-sm)' }}>
           <div className="form-group" style={{ flex: 1 }}>
             <label className="form-label">Start Date</label>
             <input 

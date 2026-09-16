@@ -30,30 +30,30 @@ export default function KPICards({ requests }) {
   return (
     <div className="kpi-grid">
       {/* CSAT Card */}
-      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '4px solid var(--rva-navy)' }}>
+      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '3px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
             Avg Customer Satisfaction
           </span>
-          <div style={{ background: 'rgba(38, 70, 119, 0.3)', padding: '6px', borderRadius: '8px', color: 'var(--rva-sky)' }}>
+          <div style={{ background: 'rgba(38, 70, 119, 0.08)', padding: '6px', borderRadius: '8px', color: 'var(--rva-navy)' }}>
             <Star size={18} />
           </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-          <span style={{ fontSize: '2.4rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>
+          <span style={{ fontSize: '2.4rem', fontWeight: 800, fontFamily: 'var(--font-heading)', color: 'var(--rva-dark)' }}>
             {avgCSAT}
           </span>
           <span style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>/ 5.0</span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--rva-yellow)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#d97706' }}>
           {[1, 2, 3, 4, 5].map(star => (
             <Star
               key={star}
               size={14}
-              fill={star <= Math.round(parseFloat(avgCSAT) || 0) ? 'var(--rva-yellow)' : 'none'}
-              stroke="var(--rva-yellow)"
+              fill={star <= Math.round(parseFloat(avgCSAT) || 0) ? '#f59e0b' : 'none'}
+              stroke="#f59e0b"
             />
           ))}
           <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginLeft: '6px' }}>
@@ -63,18 +63,18 @@ export default function KPICards({ requests }) {
       </div>
 
       {/* SLA Attainment Card */}
-      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '4px solid var(--rva-sky)' }}>
+      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '3px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
             SLA Attainment Rate
           </span>
-          <div style={{ background: 'rgba(127, 177, 229, 0.2)', padding: '6px', borderRadius: '8px', color: 'var(--rva-sky)' }}>
+          <div style={{ background: 'rgba(38, 70, 119, 0.08)', padding: '6px', borderRadius: '8px', color: 'var(--rva-navy)' }}>
             <CheckCircle2 size={18} />
           </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-          <span style={{ fontSize: '2.4rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>
+          <span style={{ fontSize: '2.4rem', fontWeight: 800, fontFamily: 'var(--font-heading)', color: 'var(--rva-dark)' }}>
             {slaAttainmentPct}%
           </span>
           <span className={`badge ${parseFloat(slaAttainmentPct) >= 80 ? 'badge-success' : 'badge-danger'}`}>
@@ -89,18 +89,18 @@ export default function KPICards({ requests }) {
       </div>
 
       {/* Backlog Card */}
-      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '4px solid var(--rva-yellow)' }}>
+      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '3px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
             Active Backlog Count
           </span>
-          <div style={{ background: 'rgba(255, 232, 107, 0.2)', padding: '6px', borderRadius: '8px', color: 'var(--rva-yellow)' }}>
+          <div style={{ background: 'rgba(170, 36, 42, 0.08)', padding: '6px', borderRadius: '8px', color: 'var(--rva-red)' }}>
             <AlertTriangle size={18} />
           </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-          <span style={{ fontSize: '2.4rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>
+          <span style={{ fontSize: '2.4rem', fontWeight: 800, fontFamily: 'var(--font-heading)', color: 'var(--rva-dark)' }}>
             {backlogRequests.length}
           </span>
           <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Open Requests</span>
@@ -112,18 +112,18 @@ export default function KPICards({ requests }) {
       </div>
 
       {/* Avg Resolution Time Card */}
-      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '4px solid var(--rva-navy)' }}>
+      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '3px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
             Avg Resolution Time
           </span>
-          <div style={{ background: 'rgba(38, 70, 119, 0.3)', padding: '6px', borderRadius: '8px', color: 'var(--rva-sky)' }}>
+          <div style={{ background: 'rgba(38, 70, 119, 0.08)', padding: '6px', borderRadius: '8px', color: 'var(--rva-navy)' }}>
             <Clock size={18} />
           </div>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-          <span style={{ fontSize: '2.4rem', fontWeight: 800, fontFamily: 'var(--font-heading)' }}>
+          <span style={{ fontSize: '2.4rem', fontWeight: 800, fontFamily: 'var(--font-heading)', color: 'var(--rva-dark)' }}>
             {avgResolutionDays}
           </span>
           <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Days / Request</span>

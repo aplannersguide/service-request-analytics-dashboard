@@ -74,7 +74,7 @@ export default function RequestDataTable({ requests }) {
             ) : (
               paginatedRequests.map(r => (
                 <tr key={r.id}>
-                  <td style={{ fontWeight: 700, color: 'var(--accent-blue)' }}>#{r.id}</td>
+                  <td style={{ fontWeight: 700, color: 'var(--rva-navy)' }}>#{r.id}</td>
                   <td>{r.ownerGroup}</td>
                   <td style={{ maxWidth: '220px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={r.serviceType}>
                     {r.serviceType}
@@ -159,18 +159,18 @@ export default function RequestDataTable({ requests }) {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'rgba(0, 0, 0, 0.75)',
-          backdropFilter: 'blur(8px)',
+          background: 'rgba(15, 23, 42, 0.4)',
+          backdropFilter: 'blur(4px)',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           zIndex: 1000,
           padding: '20px'
         }}>
-          <div className="glass-card" style={{ width: '680px', maxWidth: '100%', maxHeight: '90vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--bg-card-border)', paddingBottom: '12px' }}>
+          <div className="glass-card" style={{ width: '680px', maxWidth: '100%', maxHeight: '90vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px', background: '#ffffff' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e2e8f0', paddingBottom: '12px' }}>
               <div>
-                <h3 style={{ fontSize: '1.25rem', color: 'var(--accent-blue)' }}>Service Request #{selectedRecord.id}</h3>
+                <h3 style={{ fontSize: '1.25rem', color: 'var(--rva-navy)' }}>Service Request #{selectedRecord.id}</h3>
                 <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{selectedRecord.serviceType}</span>
               </div>
               <button 

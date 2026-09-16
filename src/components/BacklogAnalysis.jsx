@@ -173,8 +173,8 @@ export default function BacklogAnalysis({ requests }) {
       {/* Active Drill-Down Banner */}
       {isAnyChartFilterActive && (
         <div style={{
-          background: 'rgba(56, 189, 248, 0.12)',
-          border: '1px solid rgba(56, 189, 248, 0.3)',
+          background: 'rgba(38, 70, 119, 0.08)',
+          border: '1px solid rgba(38, 70, 119, 0.25)',
           borderRadius: 'var(--radius-sm)',
           padding: '10px 16px',
           display: 'flex',
@@ -184,7 +184,7 @@ export default function BacklogAnalysis({ requests }) {
           gap: '12px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', fontSize: '0.85rem' }}>
-            <span style={{ fontWeight: 700, color: 'var(--accent-blue)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontWeight: 700, color: 'var(--rva-navy)', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Filter size={14} /> CROSS-CHART DRILL-DOWN ACTIVE:
             </span>
             {selectedBacklogType && (
@@ -217,7 +217,7 @@ export default function BacklogAnalysis({ requests }) {
       <div className="glass-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-blue)', fontWeight: 700 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
               <Layers size={18} /> BACKLOG BY SERVICE REQUEST TYPE (CROSS-FILTERS PAGE)
             </div>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
@@ -252,8 +252,8 @@ export default function BacklogAnalysis({ requests }) {
                 }
               },
               scales: {
-                x: { ticks: { color: '#94a3b8', font: { size: 11 }, maxRotation: 30 } },
-                y: { ticks: { color: '#94a3b8', precision: 0 } }
+                x: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569', font: { size: 11 }, maxRotation: 30 } },
+                y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569', precision: 0 } }
               }
             }}
           />
@@ -265,7 +265,7 @@ export default function BacklogAnalysis({ requests }) {
         {/* Backlog Aging Buckets */}
         <div className="glass-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--status-warning)', fontWeight: 700 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-red)', fontWeight: 700 }}>
               <Clock size={18} /> AGING DISTRIBUTION (CROSS-FILTERS PAGE)
             </div>
             {selectedAgingBucket && (
@@ -295,8 +295,8 @@ export default function BacklogAnalysis({ requests }) {
                   }
                 },
                 scales: {
-                  x: { ticks: { color: '#94a3b8', font: { size: 11 } } },
-                  y: { ticks: { color: '#94a3b8', precision: 0 } }
+                  x: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569', font: { size: 11 } } },
+                  y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569', precision: 0 } }
                 }
               }}
             />
@@ -306,7 +306,7 @@ export default function BacklogAnalysis({ requests }) {
         {/* Workload by Assignee */}
         <div className="glass-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-indigo)', fontWeight: 700 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
               <UserCheck size={18} /> WORKLOAD BY ASSIGNEE (CROSS-FILTERS PAGE)
             </div>
             {selectedAssignee && (
@@ -337,8 +337,8 @@ export default function BacklogAnalysis({ requests }) {
                   }
                 },
                 scales: {
-                  x: { ticks: { color: '#94a3b8', precision: 0 } },
-                  y: { ticks: { color: '#94a3b8', font: { size: 11 } } }
+                  x: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569', precision: 0 } },
+                  y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569', font: { size: 11 } } }
                 }
               }}
             />
@@ -350,7 +350,7 @@ export default function BacklogAnalysis({ requests }) {
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--status-warning)', fontWeight: 700 }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
               <ShieldAlert size={18} /> ACTIVE BACKLOG RECORDS ({filteredBacklogItems.length})
             </span>
           </div>
