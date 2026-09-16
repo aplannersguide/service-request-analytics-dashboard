@@ -1,26 +1,40 @@
+/* City of Richmond (RVA) Official Brand Design System */
 :root {
-  --bg-dark: #0b0f19;
-  --bg-card: rgba(18, 25, 41, 0.75);
-  --bg-card-border: rgba(255, 255, 255, 0.08);
-  --bg-card-hover: rgba(28, 39, 63, 0.85);
+  /* Brand Palette Colors based on Usage Ratio */
+  --rva-navy: #264677;        /* ~35% - Primary Dominant Brand Navy */
+  --rva-red: #AA242A;         /* ~20% - Richmond Crimson Red (Breaches/Alerts/Danger) */
+  --rva-sky: #7fb1e5;         /* ~15% - Richmond Sky Blue (Interactive Accents/Lines) */
+  --rva-dark: #282938;        /* ~12% - Dark Slate Base Canvas */
+  --rva-yellow: #ffe86b;      /* ~3%  - Richmond Yellow (Warnings/Medium Priority) */
+  --rva-pink: #e0a2d4;        /* ~3%  - Richmond Pink/Lavender (Special Highlights) */
+  --rva-coral: #ff8666;       /* ~3%  - Richmond Coral/Orange (Aging Alerts) */
+  --rva-green: #a8dd83;       /* ~3%  - Richmond Light Green (SLA Met/High CSAT/Success) */
+  --rva-white: #ffffff;       /* Text Main */
+  --rva-black: #000000;
 
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
+  /* Theme Tokens */
+  --bg-dark: #1a1c26;
+  --bg-card: rgba(40, 41, 56, 0.85);
+  --bg-card-border: rgba(127, 177, 229, 0.18);
+  --bg-card-hover: rgba(38, 70, 119, 0.4);
 
-  --accent-blue: #38bdf8;
-  --accent-cyan: #06b6d4;
-  --accent-indigo: #6366f1;
-  --accent-purple: #a855f7;
+  --text-main: #ffffff;
+  --text-muted: #cbd5e1;
+  --text-dim: #94a3b8;
+
+  --accent-blue: var(--rva-sky);
+  --accent-cyan: var(--rva-sky);
+  --accent-indigo: var(--rva-navy);
+  --accent-purple: var(--rva-pink);
   
-  --status-success: #10b981;
-  --status-success-bg: rgba(16, 185, 129, 0.15);
-  --status-warning: #f59e0b;
-  --status-warning-bg: rgba(245, 158, 11, 0.15);
-  --status-danger: #ef4444;
-  --status-danger-bg: rgba(239, 68, 68, 0.15);
-  --status-info: #3b82f6;
-  --status-info-bg: rgba(59, 130, 246, 0.15);
+  --status-success: var(--rva-green);
+  --status-success-bg: rgba(168, 221, 131, 0.18);
+  --status-warning: var(--rva-yellow);
+  --status-warning-bg: rgba(255, 232, 107, 0.18);
+  --status-danger: var(--rva-red);
+  --status-danger-bg: rgba(170, 36, 42, 0.22);
+  --status-info: var(--rva-sky);
+  --status-info-bg: rgba(127, 177, 229, 0.18);
 
   --font-family: 'Inter', system-ui, -apple-system, sans-serif;
   --font-heading: 'Outfit', sans-serif;
@@ -29,9 +43,9 @@
   --radius-md: 14px;
   --radius-lg: 20px;
   
-  --shadow-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  --shadow-neon-blue: 0 0 20px rgba(56, 189, 248, 0.2);
-  --shadow-neon-purple: 0 0 20px rgba(168, 85, 247, 0.2);
+  --shadow-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+  --shadow-neon-blue: 0 0 20px rgba(127, 177, 229, 0.25);
+  --shadow-neon-navy: 0 0 20px rgba(38, 70, 119, 0.3);
   --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -44,9 +58,9 @@
 body {
   background-color: var(--bg-dark);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.08) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(38, 70, 119, 0.25) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(170, 36, 42, 0.15) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(127, 177, 229, 0.1) 0px, transparent 50%);
   background-attachment: fixed;
   color: var(--text-main);
   font-family: var(--font-family);
@@ -78,7 +92,7 @@ body {
 }
 
 .glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(127, 177, 229, 0.35);
 }
 
 /* Headers & Typography */
@@ -88,7 +102,7 @@ h1, h2, h3, h4 {
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #f43f5e 100%);
+  background: linear-gradient(135deg, #7fb1e5 0%, #ffffff 50%, #ffe86b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -118,14 +132,14 @@ h1, h2, h3, h4 {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: rgba(40, 41, 56, 0.8);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(127, 177, 229, 0.3);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(127, 177, 229, 0.5);
 }
 
 /* Buttons & Controls */
@@ -144,26 +158,27 @@ h1, h2, h3, h4 {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #0284c7 0%, #6366f1 100%);
+  background: linear-gradient(135deg, #264677 0%, #1e365d 100%);
   color: white;
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+  border: 1px solid rgba(127, 177, 229, 0.4);
+  box-shadow: 0 4px 14px rgba(38, 70, 119, 0.4);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #0369a1 0%, #4f46e5 100%);
-  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.6);
+  background: linear-gradient(135deg, #315894 0%, #264677 100%);
+  box-shadow: 0 6px 20px rgba(127, 177, 229, 0.4);
   transform: translateY(-1px);
 }
 
 .btn-outline {
   background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(127, 177, 229, 0.25);
   color: var(--text-main);
 }
 
 .btn-outline:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(127, 177, 229, 0.15);
+  border-color: rgba(127, 177, 229, 0.4);
 }
 
 /* Form Inputs & Selects */
@@ -182,8 +197,8 @@ h1, h2, h3, h4 {
 }
 
 .select-input, .text-input {
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(40, 41, 56, 0.95);
+  border: 1px solid rgba(127, 177, 229, 0.25);
   color: var(--text-main);
   padding: 9px 14px;
   border-radius: var(--radius-sm);
@@ -193,12 +208,12 @@ h1, h2, h3, h4 {
 }
 
 .select-input:focus, .text-input:focus {
-  border-color: var(--accent-blue);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+  border-color: var(--rva-sky);
+  box-shadow: 0 0 0 3px rgba(127, 177, 229, 0.25);
 }
 
 .select-input option {
-  background: #0f172a;
+  background: #282938;
   color: white;
 }
 
@@ -216,26 +231,26 @@ h1, h2, h3, h4 {
 
 .badge-success {
   background: var(--status-success-bg);
-  color: var(--status-success);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--rva-green);
+  border: 1px solid rgba(168, 221, 131, 0.35);
 }
 
 .badge-danger {
   background: var(--status-danger-bg);
-  color: var(--status-danger);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ff6b72;
+  border: 1px solid rgba(170, 36, 42, 0.45);
 }
 
 .badge-warning {
   background: var(--status-warning-bg);
-  color: var(--status-warning);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #ffe86b;
+  border: 1px solid rgba(255, 232, 107, 0.35);
 }
 
 .badge-info {
   background: var(--status-info-bg);
-  color: var(--status-info);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: var(--rva-sky);
+  border: 1px solid rgba(127, 177, 229, 0.35);
 }
 
 /* Tab Navigation */
@@ -250,7 +265,7 @@ h1, h2, h3, h4 {
   padding: 10px 20px;
   border-radius: var(--radius-sm);
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   color: var(--text-muted);
   font-family: var(--font-heading);
   font-weight: 600;
@@ -264,14 +279,14 @@ h1, h2, h3, h4 {
 
 .tab-btn:hover {
   color: var(--text-main);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(127, 177, 229, 0.1);
 }
 
 .tab-btn.active {
   color: white;
-  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, rgba(38, 70, 119, 0.9) 0%, rgba(40, 41, 56, 0.9) 100%);
+  border: 1px solid rgba(127, 177, 229, 0.4);
+  box-shadow: 0 4px 14px rgba(38, 70, 119, 0.3);
 }
 
 /* Data Table */
@@ -289,9 +304,9 @@ h1, h2, h3, h4 {
 }
 
 .custom-table th {
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(40, 41, 56, 0.95);
   padding: 14px 16px;
-  color: var(--text-dim);
+  color: var(--rva-sky);
   text-transform: uppercase;
   font-size: 0.75rem;
   font-weight: 700;
@@ -312,5 +327,5 @@ h1, h2, h3, h4 {
 }
 
 .custom-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(127, 177, 229, 0.06);
 }

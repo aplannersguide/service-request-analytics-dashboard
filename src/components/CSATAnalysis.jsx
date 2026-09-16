@@ -28,11 +28,11 @@ export default function CSATAnalysis({ requests }) {
   });
 
   const defaultDistColors = [
-    'rgba(239, 68, 68, 0.85)',
-    'rgba(245, 158, 11, 0.85)',
-    'rgba(234, 179, 8, 0.85)',
-    'rgba(56, 189, 248, 0.85)',
-    'rgba(16, 185, 129, 0.85)'
+    'rgba(170, 36, 42, 0.85)',   // 1 Star: Crimson Red
+    'rgba(255, 134, 102, 0.85)',  // 2 Stars: Coral
+    'rgba(255, 232, 107, 0.85)',  // 3 Stars: Yellow
+    'rgba(127, 177, 229, 0.85)',  // 4 Stars: Sky Blue
+    'rgba(168, 221, 131, 0.85)'   // 5 Stars: Light Green
   ];
 
   const distColors = [1, 2, 3, 4, 5].map((star, idx) => {
@@ -74,8 +74,8 @@ export default function CSATAnalysis({ requests }) {
   const lowData = sortedLowCSAT.length > 0 ? sortedLowCSAT.map(e => e[1]) : [0];
 
   const lowColors = lowLabels.map(label => {
-    if (!activeLowTypeFilter) return 'rgba(239, 68, 68, 0.85)';
-    if (activeLowTypeFilter === label) return 'rgba(239, 68, 68, 0.95)';
+    if (!activeLowTypeFilter) return 'rgba(170, 36, 42, 0.85)';
+    if (activeLowTypeFilter === label) return 'rgba(170, 36, 42, 0.98)';
     return 'rgba(148, 163, 184, 0.25)';
   });
 
@@ -85,7 +85,7 @@ export default function CSATAnalysis({ requests }) {
       label: 'Count of Low Ratings',
       data: lowData,
       backgroundColor: lowColors,
-      borderColor: '#ef4444',
+      borderColor: '#AA242A',
       borderWidth: 1,
       borderRadius: 6
     }]

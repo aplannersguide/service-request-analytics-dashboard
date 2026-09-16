@@ -59,8 +59,8 @@ export default function ParetoChart({ requests }) {
         type: 'bar',
         label: 'SLA Breach Count',
         data: breachCounts.length > 0 ? breachCounts : [0],
-        backgroundColor: 'rgba(239, 68, 68, 0.75)',
-        borderColor: '#ef4444',
+        backgroundColor: 'rgba(170, 36, 42, 0.85)',
+        borderColor: '#AA242A',
         borderWidth: 1,
         borderRadius: 6,
         yAxisID: 'yCount',
@@ -70,10 +70,10 @@ export default function ParetoChart({ requests }) {
         type: 'line',
         label: 'Cumulative Breach %',
         data: cumulativePcts.length > 0 ? cumulativePcts : [0],
-        borderColor: '#38bdf8',
-        backgroundColor: '#38bdf8',
+        borderColor: '#7fb1e5',
+        backgroundColor: '#7fb1e5',
         borderWidth: 3,
-        pointBackgroundColor: '#38bdf8',
+        pointBackgroundColor: '#7fb1e5',
         pointRadius: 4,
         pointHoverRadius: 7,
         tension: 0.2,
@@ -92,10 +92,10 @@ export default function ParetoChart({ requests }) {
         labels: { color: '#f8fafc', font: { family: 'Inter', size: 12, weight: '600' } }
       },
       tooltip: {
-        backgroundColor: 'rgba(15, 23, 42, 0.95)',
-        titleColor: '#38bdf8',
+        backgroundColor: 'rgba(40, 41, 56, 0.95)',
+        titleColor: '#7fb1e5',
         bodyColor: '#f8fafc',
-        borderColor: 'rgba(255, 255, 255, 0.15)',
+        borderColor: 'rgba(127, 177, 229, 0.25)',
         borderWidth: 1,
         padding: 12,
         callbacks: {
@@ -111,23 +111,23 @@ export default function ParetoChart({ requests }) {
     scales: {
       x: {
         grid: { color: 'rgba(255, 255, 255, 0.05)' },
-        ticks: { color: '#94a3b8', font: { family: 'Inter', size: 11 }, maxRotation: 35 }
+        ticks: { color: '#cbd5e1', font: { family: 'Inter', size: 11 }, maxRotation: 35 }
       },
       yCount: {
         type: 'linear',
         position: 'left',
-        title: { display: true, text: 'SLA Breach Count', color: '#ef4444', font: { size: 12, weight: 'bold' } },
+        title: { display: true, text: 'SLA Breach Count', color: '#AA242A', font: { size: 12, weight: 'bold' } },
         grid: { color: 'rgba(255, 255, 255, 0.05)' },
-        ticks: { color: '#94a3b8', precision: 0 }
+        ticks: { color: '#cbd5e1', precision: 0 }
       },
       yPct: {
         type: 'linear',
         position: 'right',
         min: 0,
         max: 100,
-        title: { display: true, text: 'Cumulative Percentage (%)', color: '#38bdf8', font: { size: 12, weight: 'bold' } },
+        title: { display: true, text: 'Cumulative Percentage (%)', color: '#7fb1e5', font: { size: 12, weight: 'bold' } },
         grid: { drawOnChartArea: false },
-        ticks: { color: '#94a3b8', callback: (val) => `${val}%` }
+        ticks: { color: '#cbd5e1', callback: (val) => `${val}%` }
       }
     }
   };
@@ -166,13 +166,13 @@ export default function ParetoChart({ requests }) {
       {
         label: 'Target SLA (Days)',
         data: timeEntries.map(e => e.avgTarget),
-        backgroundColor: 'rgba(16, 185, 129, 0.8)',
+        backgroundColor: 'rgba(168, 221, 131, 0.85)',
         borderRadius: 4
       },
       {
         label: 'Actual Resolution (Days)',
         data: timeEntries.map(e => e.avgActual),
-        backgroundColor: 'rgba(239, 68, 68, 0.8)',
+        backgroundColor: 'rgba(170, 36, 42, 0.85)',
         borderRadius: 4
       }
     ]

@@ -30,12 +30,12 @@ export default function KPICards({ requests }) {
   return (
     <div className="kpi-grid">
       {/* CSAT Card */}
-      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '4px solid var(--accent-purple)' }}>
+      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '4px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
             Avg Customer Satisfaction
           </span>
-          <div style={{ background: 'rgba(168, 85, 247, 0.15)', padding: '6px', borderRadius: '8px', color: 'var(--accent-purple)' }}>
+          <div style={{ background: 'rgba(38, 70, 119, 0.3)', padding: '6px', borderRadius: '8px', color: 'var(--rva-sky)' }}>
             <Star size={18} />
           </div>
         </div>
@@ -47,13 +47,13 @@ export default function KPICards({ requests }) {
           <span style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>/ 5.0</span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#f59e0b' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--rva-yellow)' }}>
           {[1, 2, 3, 4, 5].map(star => (
             <Star
               key={star}
               size={14}
-              fill={star <= Math.round(parseFloat(avgCSAT) || 0) ? '#f59e0b' : 'none'}
-              stroke="#f59e0b"
+              fill={star <= Math.round(parseFloat(avgCSAT) || 0) ? 'var(--rva-yellow)' : 'none'}
+              stroke="var(--rva-yellow)"
             />
           ))}
           <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginLeft: '6px' }}>
@@ -63,12 +63,12 @@ export default function KPICards({ requests }) {
       </div>
 
       {/* SLA Attainment Card */}
-      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '4px solid var(--accent-cyan)' }}>
+      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '4px solid var(--rva-sky)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
             SLA Attainment Rate
           </span>
-          <div style={{ background: 'rgba(6, 182, 212, 0.15)', padding: '6px', borderRadius: '8px', color: 'var(--accent-cyan)' }}>
+          <div style={{ background: 'rgba(127, 177, 229, 0.2)', padding: '6px', borderRadius: '8px', color: 'var(--rva-sky)' }}>
             <CheckCircle2 size={18} />
           </div>
         </div>
@@ -84,17 +84,17 @@ export default function KPICards({ requests }) {
         </div>
 
         <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-          <strong style={{ color: 'var(--status-danger)' }}>{totalBreaches} Total Breaches</strong> (Closed + Open past-due)
+          <strong style={{ color: 'var(--rva-red)' }}>{totalBreaches} Total Breaches</strong> (Closed + Open past-due)
         </div>
       </div>
 
       {/* Backlog Card */}
-      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '4px solid var(--status-warning)' }}>
+      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '4px solid var(--rva-yellow)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
             Active Backlog Count
           </span>
-          <div style={{ background: 'rgba(245, 158, 11, 0.15)', padding: '6px', borderRadius: '8px', color: 'var(--status-warning)' }}>
+          <div style={{ background: 'rgba(255, 232, 107, 0.2)', padding: '6px', borderRadius: '8px', color: 'var(--rva-yellow)' }}>
             <AlertTriangle size={18} />
           </div>
         </div>
@@ -107,17 +107,17 @@ export default function KPICards({ requests }) {
         </div>
 
         <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-          <span style={{ color: 'var(--status-danger)', fontWeight: 700 }}>{openBreaches} ({openBreachPct}%)</span> currently past due SLA
+          <span style={{ color: 'var(--rva-red)', fontWeight: 700 }}>{openBreaches} ({openBreachPct}%)</span> currently past due SLA
         </div>
       </div>
 
       {/* Avg Resolution Time Card */}
-      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '4px solid var(--accent-blue)' }}>
+      <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '4px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
             Avg Resolution Time
           </span>
-          <div style={{ background: 'rgba(56, 189, 248, 0.15)', padding: '6px', borderRadius: '8px', color: 'var(--accent-blue)' }}>
+          <div style={{ background: 'rgba(38, 70, 119, 0.3)', padding: '6px', borderRadius: '8px', color: 'var(--rva-sky)' }}>
             <Clock size={18} />
           </div>
         </div>

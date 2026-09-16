@@ -43,8 +43,8 @@ export default function BacklogAnalysis({ requests }) {
   const typeCounts = sortedTypes.length > 0 ? sortedTypes.map(e => e[1]) : [0];
 
   const typeColors = typeLabels.map(label => {
-    if (!selectedBacklogType) return 'rgba(56, 189, 248, 0.85)';
-    if (selectedBacklogType === label) return 'rgba(56, 189, 248, 0.95)';
+    if (!selectedBacklogType) return 'rgba(127, 177, 229, 0.85)';
+    if (selectedBacklogType === label) return 'rgba(127, 177, 229, 0.98)';
     return 'rgba(148, 163, 184, 0.25)'; // Grayed out
   });
 
@@ -54,7 +54,7 @@ export default function BacklogAnalysis({ requests }) {
       label: 'Open Backlog Count',
       data: typeCounts,
       backgroundColor: typeColors,
-      borderColor: '#38bdf8',
+      borderColor: '#7fb1e5',
       borderWidth: 1,
       borderRadius: 6
     }]
@@ -80,10 +80,10 @@ export default function BacklogAnalysis({ requests }) {
 
   const agingLabels = Object.keys(ageBuckets);
   const defaultAgingColors = [
-    'rgba(16, 185, 129, 0.85)',
-    'rgba(56, 189, 248, 0.85)',
-    'rgba(245, 158, 11, 0.85)',
-    'rgba(239, 68, 68, 0.85)'
+    'rgba(168, 221, 131, 0.85)', // 0-7 Days: Light Green
+    'rgba(127, 177, 229, 0.85)', // 8-14 Days: Sky Blue
+    'rgba(255, 232, 107, 0.85)', // 15-30 Days: Yellow
+    'rgba(170, 36, 42, 0.85)'    // 30+ Days: Crimson Red
   ];
 
   const agingColors = agingLabels.map((bucket, idx) => {
@@ -115,8 +115,8 @@ export default function BacklogAnalysis({ requests }) {
   const ownerLabels = ownerSorted.length > 0 ? ownerSorted.map(e => e[0]) : ['No Assignees'];
 
   const ownerColors = ownerLabels.map(label => {
-    if (!selectedAssignee) return 'rgba(99, 102, 241, 0.85)';
-    if (selectedAssignee === label) return 'rgba(99, 102, 241, 0.95)';
+    if (!selectedAssignee) return 'rgba(38, 70, 119, 0.85)';
+    if (selectedAssignee === label) return 'rgba(38, 70, 119, 0.98)';
     return 'rgba(148, 163, 184, 0.25)'; // Grayed out
   });
 
