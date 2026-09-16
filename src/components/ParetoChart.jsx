@@ -1,28 +1,9 @@
 import React, { useState } from 'react';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
+import { Chart as ChartJS, registerables } from 'chart.js';
 import { Chart, Bar } from 'react-chartjs-2';
 import { BarChart2, Info, Clock } from 'lucide-react';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(...registerables);
 
 export default function ParetoChart({ requests }) {
   const [groupBy, setGroupBy] = useState('serviceType'); // 'serviceType', 'ownerGroup', 'owner'
