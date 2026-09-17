@@ -26,7 +26,6 @@ export default function App() {
   
   // Single-Select & Date Scope Filters
   const [datePreset, setDatePreset] = useState('ALL');
-  const [dateFilterField, setDateFilterField] = useState('closed'); // 'closed' vs 'opened'
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
@@ -158,16 +157,35 @@ export default function App() {
     setSelectedOwners([]);
     setSelectedTypes([]);
     setDatePreset('ALL');
-    setDateFilterField('closed');
     setCustomStartDate('');
     setCustomEndDate('');
     setStatusFilter('ALL');
   };
 
-  // 3. Apply Global Filters
-  const filteredRequests = useMemo(() => {
-    const now = new Date(2026, 7, 25);
+  // Helper filter function for date filtering
+  const matchesDateRange = (refDate, now) => {
+    if (datePreset === 'ALL') return true;
+    if (!refDate) return false;
 
+    if (datePreset === 'LAST_MONTH') {
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400000);
+      return refDate >= thirtyDaysAgo && refDate <= now;
+    } else if (datePreset === 'LAST_QUARTER') {
+      const ninetyDaysAgo = new Date(now.getTime() - 90 * 86400000);
+      return refDate >= ninetyDaysAgo && refDate <= now;
+    } else if (datePreset === 'LAST_YEAR') {
+      const oneYearAgo = new Date(now.getTime() - 365 * 86400000);
+      return refDate >= oneYearAgo && refDate <= now;
+    } else if (datePreset === 'CUSTOM') {
+      if (customStartDate && refDate < new Date(customStartDate)) return false;
+      if (customEndDate && refDate > new Date(customEndDate + 'T23:59:59')) return false;
+      return true;
+    }
+    return true;
+  };
+
+  // Base dimension filters (Depts, Groups, Owners, Types, Status)
+  const baseFilteredRequests = useMemo(() => {
     return processedRequests.filter(r => {
       if (isDeptFilteringActive && !selectedDepts.includes(r.department)) return false;
       if (isGroupFilteringActive && !selectedGroups.includes(r.ownerGroup)) return false;
@@ -178,25 +196,6 @@ export default function App() {
       if (statusFilter === 'BREACHED' && !r.isSLABreached) return false;
       if (statusFilter === 'COMPLETED' && !r.isCompleted) return false;
 
-      if (datePreset !== 'ALL') {
-        const refDate = dateFilterField === 'closed' ? (r.closedDate || r.openedDate) : r.openedDate;
-        if (!refDate) return false;
-
-        if (datePreset === 'LAST_MONTH') {
-          const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400000);
-          if (refDate < thirtyDaysAgo || refDate > now) return false;
-        } else if (datePreset === 'LAST_QUARTER') {
-          const ninetyDaysAgo = new Date(now.getTime() - 90 * 86400000);
-          if (refDate < ninetyDaysAgo || refDate > now) return false;
-        } else if (datePreset === 'LAST_YEAR') {
-          const oneYearAgo = new Date(now.getTime() - 365 * 86400000);
-          if (refDate < oneYearAgo || refDate > now) return false;
-        } else if (datePreset === 'CUSTOM') {
-          if (customStartDate && refDate < new Date(customStartDate)) return false;
-          if (customEndDate && refDate > new Date(customEndDate + 'T23:59:59')) return false;
-        }
-      }
-
       return true;
     });
   }, [
@@ -205,8 +204,20 @@ export default function App() {
     selectedGroups, isGroupFilteringActive, 
     selectedOwners, isOwnerFilteringActive, 
     selectedTypes, isTypeFilteringActive, 
-    statusFilter, datePreset, dateFilterField, customStartDate, customEndDate
+    statusFilter
   ]);
+
+  // Context-Aware Date Filtered Subset 1: OPENED DATE SCOPE (Backlog, Intake volume)
+  const filteredRequestsOpened = useMemo(() => {
+    const now = new Date(2026, 7, 25);
+    return baseFilteredRequests.filter(r => matchesDateRange(r.openedDate, now));
+  }, [baseFilteredRequests, datePreset, customStartDate, customEndDate]);
+
+  // Context-Aware Date Filtered Subset 2: CLOSED / SURVEY DATE SCOPE (SLA Attainment, Resolution Time, CSAT)
+  const filteredRequestsClosed = useMemo(() => {
+    const now = new Date(2026, 7, 25);
+    return baseFilteredRequests.filter(r => matchesDateRange(r.closedDate || r.openedDate, now));
+  }, [baseFilteredRequests, datePreset, customStartDate, customEndDate]);
 
   return (
     <div className="dashboard-container">
@@ -230,7 +241,6 @@ export default function App() {
         selectedOwners={selectedOwners}
         selectedTypes={selectedTypes}
         datePreset={datePreset}
-        dateFilterField={dateFilterField}
         customStartDate={customStartDate}
         customEndDate={customEndDate}
         statusFilter={statusFilter}
@@ -247,7 +257,6 @@ export default function App() {
         onSelectAllTypes={() => setSelectedTypes([])}
         onClearAllTypes={() => setSelectedTypes(['NONE'])}
         onDatePresetChange={setDatePreset}
-        onDateFilterFieldChange={setDateFilterField}
         onCustomStartDateChange={setCustomStartDate}
         onCustomEndDateChange={setCustomEndDate}
         onStatusFilterChange={setStatusFilter}
@@ -255,7 +264,7 @@ export default function App() {
       />
 
       {/* Executive KPI Summary Banner */}
-      <KPICards requests={filteredRequests} />
+      <KPICards requestsOpened={filteredRequestsOpened} requestsClosed={filteredRequestsClosed} />
 
       {/* Navigation Tabs */}
       <div className="tabs-container">
@@ -281,25 +290,25 @@ export default function App() {
           className={`tab-btn ${activeTab === 'explorer' ? 'active' : ''}`}
           onClick={() => setActiveTab('explorer')}
         >
-          <Table size={16} /> Data Explorer ({filteredRequests.length})
+          <Table size={16} /> Data Explorer ({filteredRequestsClosed.length})
         </button>
       </div>
 
       {/* Tab Panels */}
       {activeTab === 'pareto' && (
-        <ParetoChart requests={filteredRequests} />
+        <ParetoChart requests={filteredRequestsClosed} />
       )}
 
       {activeTab === 'csat' && (
-        <CSATAnalysis requests={filteredRequests} />
+        <CSATAnalysis requests={filteredRequestsClosed} />
       )}
 
       {activeTab === 'backlog' && (
-        <BacklogAnalysis requests={filteredRequests} />
+        <BacklogAnalysis requests={filteredRequestsOpened} />
       )}
 
       {activeTab === 'explorer' && (
-        <RequestDataTable requests={filteredRequests} />
+        <RequestDataTable requests={filteredRequestsClosed} />
       )}
 
       {/* Footer Info */}

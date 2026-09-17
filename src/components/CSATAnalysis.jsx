@@ -226,8 +226,13 @@ export default function CSATAnalysis({ requests }) {
         {/* CSAT Rating Distribution */}
         <div className="glass-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
-              <Award size={18} /> CSAT RATING DISTRIBUTION (CROSS-FILTERS PAGE)
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
+                <Award size={18} /> CSAT RATING DISTRIBUTION (CROSS-FILTERS PAGE)
+              </div>
+              <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
+                📅 Scoped by Closed/Survey Date
+              </span>
             </div>
             {activeStarFilter !== 'ALL' && (
               <button

@@ -166,8 +166,13 @@ export default function ParetoChart({ requests }) {
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-red)', fontWeight: 700 }}>
-              <BarChart2 size={18} /> PARETO ANALYSIS: SLA BREACH DRIVERS
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-red)', fontWeight: 700 }}>
+                <BarChart2 size={18} /> PARETO ANALYSIS: SLA BREACH DRIVERS
+              </div>
+              <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
+                📅 Scoped by Closed Date
+              </span>
             </div>
             <p style={{ fontSize: '0.825rem', color: 'var(--text-muted)', marginTop: '2px' }}>
               Identify the vital 20% of categories driving 80% of SLA performance failures.

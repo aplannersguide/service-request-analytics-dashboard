@@ -145,7 +145,6 @@ export default function FilterToolbar({
   selectedOwners,
   selectedTypes,
   datePreset,
-  dateFilterField,
   customStartDate,
   customEndDate,
   statusFilter,
@@ -162,7 +161,6 @@ export default function FilterToolbar({
   onSelectAllTypes,
   onClearAllTypes,
   onDatePresetChange,
-  onDateFilterFieldChange,
   onCustomStartDateChange,
   onCustomEndDateChange,
   onStatusFilterChange,
@@ -268,22 +266,6 @@ export default function FilterToolbar({
             <option value="LAST_QUARTER">Last Quarter (Q2 2026)</option>
             <option value="LAST_YEAR">Last 1 Year</option>
             <option value="CUSTOM">Custom Date Range...</option>
-          </select>
-        </div>
-
-        {/* 7. Date Reference Toggle */}
-        <div className="form-group">
-          <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Clock size={12} /> Date Scope Field
-          </label>
-          <select 
-            className="select-input" 
-            value={dateFilterField} 
-            onChange={(e) => onDateFilterFieldChange(e.target.value)}
-            style={{ width: '100%', cursor: 'pointer', color: 'var(--rva-navy)', fontWeight: 600 }}
-          >
-            <option value="closed">Closed Date (SLA & CSAT)</option>
-            <option value="opened">Opened Date (Intake & Backlog)</option>
           </select>
         </div>
       </div>

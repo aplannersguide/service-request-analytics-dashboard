@@ -1,28 +1,28 @@
 import React from 'react';
 import { Star, Clock, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown } from 'lucide-react';
 
-export default function KPICards({ requests }) {
-  // 1. CSAT Calculation
-  const csatItems = requests.filter(r => r.csatScore !== null);
+export default function KPICards({ requestsOpened = [], requestsClosed = [] }) {
+  // 1. CSAT Calculation (Scoped by Closed / Survey Date)
+  const csatItems = requestsClosed.filter(r => r.csatScore !== null);
   const avgCSAT = csatItems.length > 0
     ? (csatItems.reduce((acc, r) => acc + r.csatScore, 0) / csatItems.length).toFixed(1)
     : 'N/A';
 
-  // 2. SLA Attainment Calculation
-  const totalBreaches = requests.filter(r => r.isSLABreached).length;
-  const slaAttainmentPct = requests.length > 0
-    ? (((requests.length - totalBreaches) / requests.length) * 100).toFixed(1)
+  // 2. SLA Attainment Calculation (Scoped by Closed Date)
+  const totalBreaches = requestsClosed.filter(r => r.isSLABreached).length;
+  const slaAttainmentPct = requestsClosed.length > 0
+    ? (((requestsClosed.length - totalBreaches) / requestsClosed.length) * 100).toFixed(1)
     : '0.0';
 
-  // 3. Active Backlog Calculation
-  const backlogRequests = requests.filter(r => r.isBacklog);
+  // 3. Active Backlog Calculation (Scoped by Opened Date)
+  const backlogRequests = requestsOpened.filter(r => r.isBacklog);
   const openBreaches = backlogRequests.filter(r => r.isSLABreached).length;
   const openBreachPct = backlogRequests.length > 0
     ? ((openBreaches / backlogRequests.length) * 100).toFixed(0)
     : 0;
 
-  // 4. Avg Resolution Time for completed
-  const completedItems = requests.filter(r => r.isCompleted && r.resolutionDays !== null);
+  // 4. Avg Resolution Time for completed (Scoped by Closed Date)
+  const completedItems = requestsClosed.filter(r => r.isCompleted && r.resolutionDays !== null);
   const avgResolutionDays = completedItems.length > 0
     ? (completedItems.reduce((acc, r) => acc + r.resolutionDays, 0) / completedItems.length).toFixed(1)
     : 'N/A';
@@ -32,9 +32,14 @@ export default function KPICards({ requests }) {
       {/* CSAT Card */}
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '3px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
-            Avg Customer Satisfaction
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+              Avg Customer Satisfaction
+            </span>
+            <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
+              📅 Closed Date
+            </span>
+          </div>
           <div style={{ background: 'rgba(38, 70, 119, 0.08)', padding: '6px', borderRadius: '8px', color: 'var(--rva-navy)' }}>
             <Star size={18} />
           </div>
@@ -65,9 +70,14 @@ export default function KPICards({ requests }) {
       {/* SLA Attainment Card */}
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '3px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
-            SLA Attainment Rate
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+              SLA Attainment Rate
+            </span>
+            <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
+              📅 Closed Date
+            </span>
+          </div>
           <div style={{ background: 'rgba(38, 70, 119, 0.08)', padding: '6px', borderRadius: '8px', color: 'var(--rva-navy)' }}>
             <CheckCircle2 size={18} />
           </div>
@@ -91,9 +101,14 @@ export default function KPICards({ requests }) {
       {/* Backlog Card */}
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '3px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
-            Active Backlog Count
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+              Active Backlog Count
+            </span>
+            <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
+              📅 Opened Date
+            </span>
+          </div>
           <div style={{ background: 'rgba(170, 36, 42, 0.08)', padding: '6px', borderRadius: '8px', color: 'var(--rva-red)' }}>
             <AlertTriangle size={18} />
           </div>
@@ -114,9 +129,14 @@ export default function KPICards({ requests }) {
       {/* Avg Resolution Time Card */}
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '3px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
-            Avg Resolution Time
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+              Avg Resolution Time
+            </span>
+            <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
+              📅 Closed Date
+            </span>
+          </div>
           <div style={{ background: 'rgba(38, 70, 119, 0.08)', padding: '6px', borderRadius: '8px', color: 'var(--rva-navy)' }}>
             <Clock size={18} />
           </div>
