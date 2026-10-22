@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Filter, Calendar, Layers, ShieldAlert, RotateCcw, ChevronDown, Check, X, Building2, UserCheck, Tag, Clock } from 'lucide-react';
+import { Filter, Calendar, Layers, RotateCcw, ChevronDown, X, Building2, UserCheck, Tag } from 'lucide-react';
 
 /**
  * Reusable Multi-Select Dropdown Component with Clean Multi-Line Text Display
@@ -147,7 +147,6 @@ export default function FilterToolbar({
   datePreset,
   customStartDate,
   customEndDate,
-  statusFilter,
   onDeptToggle,
   onSelectAllDepts,
   onClearAllDepts,
@@ -163,7 +162,6 @@ export default function FilterToolbar({
   onDatePresetChange,
   onCustomStartDateChange,
   onCustomEndDateChange,
-  onStatusFilterChange,
   onResetFilters
 }) {
   return (
@@ -196,19 +194,19 @@ export default function FilterToolbar({
           placeholder="Departments"
         />
 
-        {/* 2. Unit Groups Filter */}
+        {/* 2. Owner Group Filter */}
         <MultiSelectDropdown
-          label="Unit Group"
+          label="Owner Group"
           icon={Layers}
           options={ownerGroups}
           selectedValues={selectedGroups}
           onToggle={onGroupToggle}
           onSelectAll={onSelectAllGroups}
           onClearAll={onClearAllGroups}
-          placeholder="Unit Groups"
+          placeholder="Owner Groups"
         />
 
-        {/* 3. Service Owner / Assignee Filter */}
+        {/* 3. Service Owner Filter */}
         <MultiSelectDropdown
           label="Service Owner"
           icon={UserCheck}
@@ -217,43 +215,25 @@ export default function FilterToolbar({
           onToggle={onOwnerToggle}
           onSelectAll={onSelectAllOwners}
           onClearAll={onClearAllOwners}
-          placeholder="Owners"
+          placeholder="Service Owners"
         />
 
         {/* 4. Service Request Type Filter */}
         <MultiSelectDropdown
-          label="Request Type"
+          label="Service Request Type"
           icon={Tag}
           options={requestTypes}
           selectedValues={selectedTypes}
           onToggle={onTypeToggle}
           onSelectAll={onSelectAllTypes}
           onClearAll={onClearAllTypes}
-          placeholder="Request Types"
+          placeholder="Service Request Types"
         />
 
-        {/* 5. Focus Category / Status */}
+        {/* 5. Date Range Presets */}
         <div className="form-group">
           <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <ShieldAlert size={12} /> Focus Category
-          </label>
-          <select 
-            className="select-input" 
-            value={statusFilter} 
-            onChange={(e) => onStatusFilterChange(e.target.value)}
-            style={{ width: '100%', cursor: 'pointer' }}
-          >
-            <option value="ALL">All Statuses</option>
-            <option value="BACKLOG">Active Backlog Only</option>
-            <option value="BREACHED">SLA Breached Only (Closed + Open)</option>
-            <option value="COMPLETED">Completed Requests</option>
-          </select>
-        </div>
-
-        {/* 6. Date Range Presets */}
-        <div className="form-group">
-          <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Calendar size={12} /> Date Range Filter
+            <Calendar size={12} /> Date Range Window
           </label>
           <select 
             className="select-input" 
@@ -262,9 +242,9 @@ export default function FilterToolbar({
             style={{ width: '100%', cursor: 'pointer' }}
           >
             <option value="ALL">All Time</option>
-            <option value="LAST_MONTH">Last Month (July 2026)</option>
-            <option value="LAST_QUARTER">Last Quarter (Q2 2026)</option>
-            <option value="LAST_YEAR">Last 1 Year</option>
+            <option value="LAST_MONTH">Last 30 Days (Month)</option>
+            <option value="LAST_QUARTER">Last 90 Days (Quarter)</option>
+            <option value="LAST_YEAR">Last 365 Days (1 Year)</option>
             <option value="CUSTOM">Custom Date Range...</option>
           </select>
         </div>
@@ -274,25 +254,25 @@ export default function FilterToolbar({
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', paddingTop: '2px' }}>
         {selectedDepts.filter(v => v !== 'NONE' && v !== 'ALL').length > 0 && (
           <span className="badge badge-info" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem' }}>
-            Depts: {selectedDepts.filter(v => v !== 'NONE' && v !== 'ALL').join(', ')}
+            Departments: {selectedDepts.filter(v => v !== 'NONE' && v !== 'ALL').join(', ')}
             <X size={11} style={{ cursor: 'pointer' }} onClick={onSelectAllDepts} />
           </span>
         )}
         {selectedGroups.filter(v => v !== 'NONE' && v !== 'ALL').length > 0 && (
           <span className="badge badge-info" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem' }}>
-            Units: {selectedGroups.filter(v => v !== 'NONE' && v !== 'ALL').join(', ')}
+            Owner Groups: {selectedGroups.filter(v => v !== 'NONE' && v !== 'ALL').join(', ')}
             <X size={11} style={{ cursor: 'pointer' }} onClick={onSelectAllGroups} />
           </span>
         )}
         {selectedOwners.filter(v => v !== 'NONE' && v !== 'ALL').length > 0 && (
           <span className="badge badge-info" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem' }}>
-            Owners: {selectedOwners.filter(v => v !== 'NONE' && v !== 'ALL').join(', ')}
+            Service Owners: {selectedOwners.filter(v => v !== 'NONE' && v !== 'ALL').join(', ')}
             <X size={11} style={{ cursor: 'pointer' }} onClick={onSelectAllOwners} />
           </span>
         )}
         {selectedTypes.filter(v => v !== 'NONE' && v !== 'ALL').length > 0 && (
           <span className="badge badge-info" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem' }}>
-            Types: {selectedTypes.filter(v => v !== 'NONE' && v !== 'ALL').length} selected
+            Service Request Types: {selectedTypes.filter(v => v !== 'NONE' && v !== 'ALL').length} selected
             <X size={11} style={{ cursor: 'pointer' }} onClick={onSelectAllTypes} />
           </span>
         )}

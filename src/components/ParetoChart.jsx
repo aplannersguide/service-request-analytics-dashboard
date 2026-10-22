@@ -5,11 +5,17 @@ import { BarChart2, Info, Clock } from 'lucide-react';
 
 ChartJS.register(...registerables);
 
-export default function ParetoChart({ requests }) {
+export default function ParetoChart({ requestsEffectiveSLA = [], requestsCompleted = [] }) {
   const [groupBy, setGroupBy] = useState('serviceType'); // 'serviceType', 'ownerGroup', 'owner'
+  const [breachScope, setBreachScope] = useState('ALL'); // 'ALL', 'CLOSED', 'OPEN'
 
-  // Filter breached items for Pareto Chart
-  const breachedItems = requests.filter(r => r.isSLABreached);
+  // Filter breached items based on active breachScope toggle
+  const breachedItems = requestsEffectiveSLA.filter(r => {
+    if (!r.isSLABreached) return false;
+    if (breachScope === 'CLOSED') return r.breachType === 'Closed Breach';
+    if (breachScope === 'OPEN') return r.breachType === 'Open Breach';
+    return true;
+  });
 
   const countsMap = {};
   breachedItems.forEach(item => {
@@ -18,35 +24,65 @@ export default function ParetoChart({ requests }) {
     else if (groupBy === 'ownerGroup') key = item.ownerGroup;
     else if (groupBy === 'owner') key = item.owner;
 
-    countsMap[key] = (countsMap[key] || 0) + 1;
+    if (!countsMap[key]) {
+      countsMap[key] = { closed: 0, open: 0, total: 0 };
+    }
+    if (item.breachType === 'Closed Breach') {
+      countsMap[key].closed++;
+    } else if (item.breachType === 'Open Breach') {
+      countsMap[key].open++;
+    }
+    countsMap[key].total++;
   });
 
-  const sortedEntries = Object.entries(countsMap).sort((a, b) => b[1] - a[1]);
+  const sortedEntries = Object.entries(countsMap).sort((a, b) => b[1].total - a[1].total);
 
   const labels = sortedEntries.map(e => e[0]);
-  const breachCounts = sortedEntries.map(e => e[1]);
-  const totalBreaches = breachCounts.reduce((a, b) => a + b, 0);
+  const closedBreachCounts = sortedEntries.map(e => e[1].closed);
+  const openBreachCounts = sortedEntries.map(e => e[1].open);
+  const totalBreachCounts = sortedEntries.map(e => e[1].total);
+  const totalBreaches = totalBreachCounts.reduce((a, b) => a + b, 0);
 
   let runningSum = 0;
-  const cumulativePcts = breachCounts.map(count => {
+  const cumulativePcts = totalBreachCounts.map(count => {
     runningSum += count;
     return totalBreaches > 0 ? parseFloat(((runningSum / totalBreaches) * 100).toFixed(1)) : 0;
   });
 
+  const barDatasets = [];
+  if (breachScope === 'ALL' || breachScope === 'CLOSED') {
+    barDatasets.push({
+      type: 'bar',
+      label: 'Closed Breach (Completed Late)',
+      data: closedBreachCounts.length > 0 ? closedBreachCounts : [0],
+      backgroundColor: 'rgba(170, 36, 42, 0.88)',
+      borderColor: '#AA242A',
+      borderWidth: 1,
+      borderRadius: 4,
+      stack: 'breaches',
+      yAxisID: 'yCount',
+      order: 2,
+    });
+  }
+  if (breachScope === 'ALL' || breachScope === 'OPEN') {
+    barDatasets.push({
+      type: 'bar',
+      label: 'Open Breach (Currently Past-Due)',
+      data: openBreachCounts.length > 0 ? openBreachCounts : [0],
+      backgroundColor: 'rgba(255, 134, 102, 0.9)',
+      borderColor: '#ff8666',
+      borderWidth: 1,
+      borderRadius: 4,
+      stack: 'breaches',
+      yAxisID: 'yCount',
+      order: 2,
+    });
+  }
+
   const paretoChartData = {
     labels: labels.length > 0 ? labels : ['No Breaches Found'],
     datasets: [
-      {
-        type: 'bar',
-        label: 'SLA Breach Count',
-        data: breachCounts.length > 0 ? breachCounts : [0],
-        backgroundColor: 'rgba(170, 36, 42, 0.85)',
-        borderColor: '#AA242A',
-        borderWidth: 1,
-        borderRadius: 6,
-        yAxisID: 'yCount',
-        order: 2,
-      },
+      ...barDatasets,
       {
         type: 'line',
         label: 'Cumulative Breach %',
@@ -83,21 +119,23 @@ export default function ParetoChart({ requests }) {
         callbacks: {
           label: (context) => {
             if (context.dataset.type === 'line') {
-              return ` Cumulative Impact: ${context.parsed.y}%`;
+              return ` Cumulative Share: ${context.parsed.y}%`;
             }
-            return ` SLA Breaches: ${context.parsed.y} requests`;
+            return ` ${context.dataset.label}: ${context.parsed.y} requests`;
           }
         }
       }
     },
     scales: {
       x: {
+        stacked: true,
         grid: { color: 'rgba(0, 0, 0, 0.05)' },
         ticks: { color: '#475569', font: { family: 'Inter', size: 11 }, maxRotation: 35 }
       },
       yCount: {
         type: 'linear',
         position: 'left',
+        stacked: true,
         title: { display: true, text: 'SLA Breach Count', color: '#AA242A', font: { size: 12, weight: 'bold' } },
         grid: { color: 'rgba(0, 0, 0, 0.05)' },
         ticks: { color: '#475569', precision: 0 }
@@ -114,30 +152,26 @@ export default function ParetoChart({ requests }) {
     }
   };
 
-  // Target SLA vs. Actual Resolution Time Comparison Chart
+  // Target SLA vs. Actual Resolution Time Comparison Chart (Strictly Completed Requests)
   const categoryTimeMap = {};
-  requests.forEach(r => {
+  requestsCompleted.forEach(r => {
+    if (!r.isCompleted || r.targetSLADays === null || r.resolutionDays === null) return;
     const key = `${r.department} - ${r.serviceType}`;
     if (!categoryTimeMap[key]) {
-      categoryTimeMap[key] = { targetSum: 0, actualSum: 0, targetCount: 0, actualCount: 0 };
+      categoryTimeMap[key] = { targetSum: 0, actualSum: 0, count: 0 };
     }
-    if (r.targetSLADays) {
-      categoryTimeMap[key].targetSum += r.targetSLADays;
-      categoryTimeMap[key].targetCount++;
-    }
-    if (r.isCompleted && r.resolutionDays) {
-      categoryTimeMap[key].actualSum += r.resolutionDays;
-      categoryTimeMap[key].actualCount++;
-    }
+    categoryTimeMap[key].targetSum += r.targetSLADays;
+    categoryTimeMap[key].actualSum += r.resolutionDays;
+    categoryTimeMap[key].count++;
   });
 
   const timeEntries = Object.entries(categoryTimeMap)
-    .filter(([_, data]) => data.targetCount > 0 && data.actualCount > 0)
+    .filter(([_, data]) => data.count > 0)
     .map(([key, data]) => ({
       category: key,
-      avgTarget: parseFloat((data.targetSum / data.targetCount).toFixed(1)),
-      avgActual: parseFloat((data.actualSum / data.actualCount).toFixed(1)),
-      gap: parseFloat(((data.actualSum / data.actualCount) - (data.targetSum / data.targetCount)).toFixed(1))
+      avgTarget: parseFloat((data.targetSum / data.count).toFixed(1)),
+      avgActual: parseFloat((data.actualSum / data.count).toFixed(1)),
+      gap: parseFloat(((data.actualSum / data.count) - (data.targetSum / data.count)).toFixed(1))
     }))
     .sort((a, b) => b.gap - a.gap)
     .slice(0, 10);
@@ -166,31 +200,61 @@ export default function ParetoChart({ requests }) {
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-red)', fontWeight: 700 }}>
                 <BarChart2 size={18} /> PARETO ANALYSIS: SLA BREACH DRIVERS
               </div>
               <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
-                📅 Scoped by Closed Date
+                📅 Scoped by Closed + Open Overdue
               </span>
             </div>
             <p style={{ fontSize: '0.825rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-              Identify the vital 20% of categories driving 80% of SLA performance failures.
+              Identifies the vital 20% of categories driving 80% of SLA breaches across both late completions and open past-due requests.
             </p>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', fontWeight: 600 }}>Group By:</span>
-            <select 
-              className="select-input"
-              value={groupBy}
-              onChange={(e) => setGroupBy(e.target.value)}
-              style={{ padding: '6px 12px', fontSize: '0.825rem' }}
-            >
-              <option value="serviceType">Service Request Type</option>
-              <option value="ownerGroup">Unit (Owner Group)</option>
-              <option value="owner">Assignee (Owner)</option>
-            </select>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            {/* 3-Way Breach Scope Toggle */}
+            <div style={{ display: 'flex', background: '#f1f5f9', padding: '3px', borderRadius: '8px', border: '1px solid #cbd5e1', gap: '2px' }}>
+              {[
+                { id: 'ALL', label: 'All Breaches' },
+                { id: 'CLOSED', label: 'Closed Late' },
+                { id: 'OPEN', label: 'Open Overdue' }
+              ].map(opt => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setBreachScope(opt.id)}
+                  style={{
+                    border: 'none',
+                    borderRadius: '6px',
+                    padding: '4px 10px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    background: breachScope === opt.id ? 'var(--rva-navy)' : 'transparent',
+                    color: breachScope === opt.id ? '#ffffff' : 'var(--text-main)',
+                    transition: 'var(--transition-smooth)'
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', fontWeight: 600 }}>Group By:</span>
+              <select 
+                className="select-input"
+                value={groupBy}
+                onChange={(e) => setGroupBy(e.target.value)}
+                style={{ padding: '6px 12px', fontSize: '0.825rem' }}
+              >
+                <option value="serviceType">Service Request Type</option>
+                <option value="ownerGroup">Owner Group</option>
+                <option value="owner">Service Owner</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -208,11 +272,16 @@ export default function ParetoChart({ requests }) {
 
       {/* Target SLA vs Actual Days Comparison Chart (Full Width) */}
       <div className="glass-card">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700, marginBottom: '4px' }}>
-          <Clock size={18} /> TARGET SLA VS. ACTUAL RESOLUTION TIME (DAYS)
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '4px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
+            <Clock size={18} /> TARGET SLA VS. ACTUAL RESOLUTION TIME (DAYS)
+          </div>
+          <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
+            📅 Scoped by Closed Date
+          </span>
         </div>
         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
-          Identifies categories with unrealistic SLA targets vs operational delays.
+          Compares target SLA against actual days to resolution across completed requests in the selected window.
         </p>
         <div style={{ height: '280px' }}>
           <Bar

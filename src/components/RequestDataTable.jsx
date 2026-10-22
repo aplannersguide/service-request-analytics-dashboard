@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
-import { Search, FileText, X, CheckCircle, AlertTriangle, Star, Calendar, User, Shield } from 'lucide-react';
+import { Search, FileText, X, CheckCircle, AlertTriangle, Star, ShieldAlert } from 'lucide-react';
 
 export default function RequestDataTable({ requests }) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('ALL');
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 15;
 
   const filteredRequests = requests.filter(r => {
+    if (statusFilter === 'COMPLETED' && !r.isCompleted) return false;
+    if (statusFilter === 'BACKLOG' && !r.isBacklog) return false;
+    if (statusFilter === 'BREACHED' && !r.isSLABreached) return false;
+    if (statusFilter === 'OPEN_BREACH' && r.breachType !== 'Open Breach') return false;
+    if (statusFilter === 'HIGH_FOLLOWUP' && (r.followUps || 0) < 2) return false;
+
     const term = searchTerm.toLowerCase();
     return (
       r.id.toLowerCase().includes(term) ||
@@ -26,25 +33,53 @@ export default function RequestDataTable({ requests }) {
     <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Service Requests Explorer</h3>
-          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-            Showing {filteredRequests.length} total records down to individual service requests.
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Service Requests Explorer</h3>
+            <span style={{ fontSize: '0.65rem', color: 'var(--rva-navy)', background: 'rgba(38, 70, 119, 0.08)', padding: '2px 7px', borderRadius: '10px', border: '1px solid rgba(38, 70, 119, 0.2)', fontWeight: 600 }}>
+              📅 Combined Dataset (Completed in Window + Standing Open Queue)
+            </span>
+          </div>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+            Showing {filteredRequests.length} matching records across completed requests and standing backlog.
           </p>
         </div>
 
-        <div style={{ position: 'relative', width: '300px' }}>
-          <Search size={15} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
-          <input
-            type="text"
-            className="text-input"
-            placeholder="Search request #, unit, type, owner..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-            style={{ width: '100%', paddingLeft: '32px' }}
-          />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          {/* Local Status / Focus Filter */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <ShieldAlert size={14} style={{ color: 'var(--rva-navy)' }} />
+            <select
+              className="select-input"
+              value={statusFilter}
+              onChange={(e) => {
+                setStatusFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              style={{ padding: '6px 10px', fontSize: '0.825rem', cursor: 'pointer' }}
+            >
+              <option value="ALL">All Records ({requests.length})</option>
+              <option value="COMPLETED">Completed Only</option>
+              <option value="BACKLOG">Standing Backlog Only</option>
+              <option value="BREACHED">All SLA Breaches (Closed + Open)</option>
+              <option value="OPEN_BREACH">Open Overdue Breaches Only</option>
+              <option value="HIGH_FOLLOWUP">High Follow-Ups (2+)</option>
+            </select>
+          </div>
+
+          <div style={{ position: 'relative', width: '280px' }}>
+            <Search size={15} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
+            <input
+              type="text"
+              className="text-input"
+              placeholder="Search request #, owner group, type, owner..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+              style={{ width: '100%', paddingLeft: '32px' }}
+            />
+          </div>
         </div>
       </div>
 
@@ -54,11 +89,12 @@ export default function RequestDataTable({ requests }) {
           <thead>
             <tr>
               <th>Request ID</th>
-              <th>Unit Group</th>
-              <th>Request Type</th>
-              <th>Assignee</th>
+              <th>Owner Group</th>
+              <th>Service Request Type</th>
+              <th>Service Owner</th>
               <th>Priority</th>
               <th>Status</th>
+              <th>Follow-Ups</th>
               <th>SLA Breach Status</th>
               <th>CSAT</th>
               <th>Actions</th>
@@ -67,7 +103,7 @@ export default function RequestDataTable({ requests }) {
           <tbody>
             {paginatedRequests.length === 0 ? (
               <tr>
-                <td colSpan="9" style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
+                <td colSpan="10" style={{ textAlign: 'center', padding: '30px', color: 'var(--text-muted)' }}>
                   No service requests matching current filters and search query.
                 </td>
               </tr>
@@ -88,6 +124,11 @@ export default function RequestDataTable({ requests }) {
                   <td>
                     <span className={`badge ${r.isCompleted ? 'badge-success' : 'badge-warning'}`}>
                       {r.status}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`badge ${(r.followUps || 0) >= 2 ? 'badge-danger' : 'badge-info'}`}>
+                      {r.followUps || 0}
                     </span>
                   </td>
                   <td>
@@ -183,11 +224,15 @@ export default function RequestDataTable({ requests }) {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', fontSize: '0.875rem' }}>
               <div>
-                <strong style={{ color: 'var(--text-dim)' }}>Service Owner Group (Unit):</strong>
+                <strong style={{ color: 'var(--text-dim)' }}>Department:</strong>
+                <div>{selectedRecord.department}</div>
+              </div>
+              <div>
+                <strong style={{ color: 'var(--text-dim)' }}>Owner Group:</strong>
                 <div>{selectedRecord.ownerGroup}</div>
               </div>
               <div>
-                <strong style={{ color: 'var(--text-dim)' }}>Service Owner (Assignee):</strong>
+                <strong style={{ color: 'var(--text-dim)' }}>Service Owner:</strong>
                 <div>{selectedRecord.owner}</div>
               </div>
               <div>
@@ -197,6 +242,12 @@ export default function RequestDataTable({ requests }) {
               <div>
                 <strong style={{ color: 'var(--text-dim)' }}>Service Status:</strong>
                 <div>{selectedRecord.status}</div>
+              </div>
+              <div>
+                <strong style={{ color: 'var(--text-dim)' }}>Follow-Up Count:</strong>
+                <div style={{ fontWeight: 700, color: (selectedRecord.followUps || 0) >= 2 ? 'var(--rva-red)' : 'var(--rva-dark)' }}>
+                  🔄 {selectedRecord.followUps || 0} Follow-up{(selectedRecord.followUps || 0) === 1 ? '' : 's'}
+                </div>
               </div>
               <div>
                 <strong style={{ color: 'var(--text-dim)' }}>Opened Date:</strong>
@@ -221,25 +272,34 @@ export default function RequestDataTable({ requests }) {
             {selectedRecord.description && (
               <div>
                 <strong style={{ color: 'var(--text-dim)', fontSize: '0.85rem' }}>Description:</strong>
-                <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '10px 14px', borderRadius: 'var(--radius-sm)', marginTop: '4px', fontSize: '0.875rem' }}>
+                <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '10px 14px', borderRadius: 'var(--radius-sm)', marginTop: '4px', fontSize: '0.875rem', color: 'var(--rva-dark)' }}>
                   {selectedRecord.description}
                 </div>
               </div>
             )}
 
             {/* Survey Details section */}
-            <div style={{ borderTop: '1px solid var(--bg-card-border)', paddingTop: '16px' }}>
-              <h4 style={{ fontSize: '1rem', color: 'var(--accent-purple)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '16px' }}>
+              <h4 style={{ fontSize: '1rem', color: 'var(--rva-navy)', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Star size={16} /> Survey Responses & Feedback
               </h4>
 
               {selectedRecord.csatScore ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span style={{ fontSize: '1.25rem', fontWeight: 700 }}>Overall Rating: {selectedRecord.csatScore} / 5.0</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--rva-dark)' }}>
+                      Composite CSAT: {selectedRecord.csatScore} / 5.0
+                    </span>
+                    {selectedRecord.csatDimensions && (
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', fontSize: '0.8rem' }}>
+                        <span className="badge badge-info">Overall: {selectedRecord.csatDimensions.overall ?? 'N/A'}/5</span>
+                        <span className="badge badge-info">Process Explanation: {selectedRecord.csatDimensions.explanation ?? 'N/A'}/5</span>
+                        <span className="badge badge-info">Service Quality: {selectedRecord.csatDimensions.quality ?? 'N/A'}/5</span>
+                      </div>
+                    )}
                   </div>
                   {selectedRecord.comments && selectedRecord.comments.length > 0 && (
-                    <div style={{ background: 'rgba(168, 85, 247, 0.1)', borderLeft: '3px solid var(--accent-purple)', padding: '10px 14px', fontSize: '0.875rem', fontStyle: 'italic' }}>
+                    <div style={{ background: '#f0f4f8', borderLeft: '3px solid var(--rva-navy)', padding: '10px 14px', fontSize: '0.875rem', fontStyle: 'italic', color: 'var(--rva-dark)' }}>
                       "{selectedRecord.comments.join(' ')}"
                     </div>
                   )}

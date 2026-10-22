@@ -2,10 +2,14 @@ import React, { useState } from 'react';
 import { UploadCloud, RefreshCw, Database, FileSpreadsheet, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
 import { readFileAsText, parseRawCSVText } from '../services/dataParser';
 
-export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, onDataLoaded, onResetDemo }) {
+export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, asOfDate, onDataLoaded, onResetDemo }) {
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
+
+  const formattedAsOfDate = asOfDate
+    ? asOfDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : 'N/A';
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -105,9 +109,12 @@ export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, 
               </span>
             )}
 
-            {/* Counts Badge */}
+            {/* Counts & As-Of Date Badge */}
             <span style={{ fontSize: '0.8rem', color: 'var(--rva-navy)', background: '#f1f5f9', padding: '4px 10px', borderRadius: '12px', border: '1px solid #cbd5e1', fontWeight: 600 }}>
-              📊 {requestCount} Requests • 💬 {surveyCount} Surveys
+              📊 {requestCount} Active/Completed Requests • 💬 {surveyCount} Survey Rows
+            </span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--rva-dark)', background: '#f8fafc', padding: '4px 10px', borderRadius: '12px', border: '1px solid #cbd5e1', fontWeight: 600 }} title="Dynamic dataset snapshot date derived from latest timestamp">
+              📅 Data As Of: {formattedAsOfDate}
             </span>
           </div>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '4px' }}>

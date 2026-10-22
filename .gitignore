@@ -17,3 +17,7 @@ backups/
 # System & Log Files
 .DS_Store
 *.log
+
+# Local Antigravity Context & Internal Documentation (Exclude from Public GitHub Repo)
+GEMINI.md
+docs/

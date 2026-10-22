@@ -8,7 +8,7 @@ import BacklogAnalysis from './components/BacklogAnalysis';
 import RequestDataTable from './components/RequestDataTable';
 
 import { generateMockDataset } from './services/mockData';
-import { processRawDatasets } from './services/dataParser';
+import { processRawDatasets, computeDatasetAsOfDate } from './services/dataParser';
 import { saveLocalData, getLocalData, clearLocalData } from './services/storageService';
 import { BarChart3, Star, Clock, Table } from 'lucide-react';
 
@@ -18,17 +18,16 @@ export default function App() {
   const [rawSurveys, setRawSurveys] = useState([]);
   const [activeTab, setActiveTab] = useState('pareto');
 
-  // Multi-Select Filter States
+  // Multi-Select Hierarchy Filter States (Department -> Owner Group -> Service Owner -> Service Request Type)
   const [selectedDepts, setSelectedDepts] = useState([]);
   const [selectedGroups, setSelectedGroups] = useState([]);
   const [selectedOwners, setSelectedOwners] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
   
-  // Single-Select & Date Scope Filters
+  // Date Window Filters
   const [datePreset, setDatePreset] = useState('ALL');
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
-  const [statusFilter, setStatusFilter] = useState('ALL');
 
   // Load Initial Data
   useEffect(() => {
@@ -78,10 +77,15 @@ export default function App() {
     setIsDemoData(false);
   };
 
-  // 1. Process raw items
-  const processedRequests = useMemo(() => {
-    return processRawDatasets(rawRequests, rawSurveys);
+  // Dynamic Dataset As-Of Date (Snapshot Anchor)
+  const asOfDate = useMemo(() => {
+    return computeDatasetAsOfDate(rawRequests, rawSurveys);
   }, [rawRequests, rawSurveys]);
+
+  // 1. Process raw items anchored to asOfDate
+  const processedRequests = useMemo(() => {
+    return processRawDatasets(rawRequests, rawSurveys, asOfDate);
+  }, [rawRequests, rawSurveys, asOfDate]);
 
   // 2. Filter options & cascade
   const departments = useMemo(() => {
@@ -159,23 +163,22 @@ export default function App() {
     setDatePreset('ALL');
     setCustomStartDate('');
     setCustomEndDate('');
-    setStatusFilter('ALL');
   };
 
-  // Helper filter function for date filtering
-  const matchesDateRange = (refDate, now) => {
+  // Helper filter function for date window filtering
+  const matchesDateRange = (refDate, anchorDate) => {
     if (datePreset === 'ALL') return true;
     if (!refDate) return false;
 
     if (datePreset === 'LAST_MONTH') {
-      const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400000);
-      return refDate >= thirtyDaysAgo && refDate <= now;
+      const thirtyDaysAgo = new Date(anchorDate.getTime() - 30 * 86400000);
+      return refDate >= thirtyDaysAgo && refDate <= anchorDate;
     } else if (datePreset === 'LAST_QUARTER') {
-      const ninetyDaysAgo = new Date(now.getTime() - 90 * 86400000);
-      return refDate >= ninetyDaysAgo && refDate <= now;
+      const ninetyDaysAgo = new Date(anchorDate.getTime() - 90 * 86400000);
+      return refDate >= ninetyDaysAgo && refDate <= anchorDate;
     } else if (datePreset === 'LAST_YEAR') {
-      const oneYearAgo = new Date(now.getTime() - 365 * 86400000);
-      return refDate >= oneYearAgo && refDate <= now;
+      const oneYearAgo = new Date(anchorDate.getTime() - 365 * 86400000);
+      return refDate >= oneYearAgo && refDate <= anchorDate;
     } else if (datePreset === 'CUSTOM') {
       if (customStartDate && refDate < new Date(customStartDate)) return false;
       if (customEndDate && refDate > new Date(customEndDate + 'T23:59:59')) return false;
@@ -184,18 +187,13 @@ export default function App() {
     return true;
   };
 
-  // Base dimension filters (Depts, Groups, Owners, Types, Status)
+  // Base organizational hierarchy filters (Department, Owner Group, Service Owner, Service Request Type)
   const baseFilteredRequests = useMemo(() => {
     return processedRequests.filter(r => {
       if (isDeptFilteringActive && !selectedDepts.includes(r.department)) return false;
       if (isGroupFilteringActive && !selectedGroups.includes(r.ownerGroup)) return false;
       if (isOwnerFilteringActive && !selectedOwners.includes(r.owner)) return false;
       if (isTypeFilteringActive && !selectedTypes.includes(r.serviceType)) return false;
-
-      if (statusFilter === 'BACKLOG' && !r.isBacklog) return false;
-      if (statusFilter === 'BREACHED' && !r.isSLABreached) return false;
-      if (statusFilter === 'COMPLETED' && !r.isCompleted) return false;
-
       return true;
     });
   }, [
@@ -203,29 +201,60 @@ export default function App() {
     selectedDepts, isDeptFilteringActive, 
     selectedGroups, isGroupFilteringActive, 
     selectedOwners, isOwnerFilteringActive, 
-    selectedTypes, isTypeFilteringActive, 
-    statusFilter
+    selectedTypes, isTypeFilteringActive
   ]);
 
-  // Context-Aware Date Filtered Subset 1: OPENED DATE SCOPE (Backlog, Intake volume)
-  const filteredRequestsOpened = useMemo(() => {
-    const now = new Date(2026, 7, 25);
-    return baseFilteredRequests.filter(r => matchesDateRange(r.openedDate, now));
-  }, [baseFilteredRequests, datePreset, customStartDate, customEndDate]);
+  // 1. STANDING OPEN QUEUE (Backlog): All unfulfilled requests opened on or before the end of the selected period
+  const filteredRequestsBacklog = useMemo(() => {
+    const windowEnd = (datePreset === 'CUSTOM' && customEndDate)
+      ? new Date(customEndDate + 'T23:59:59')
+      : asOfDate;
 
-  // Context-Aware Date Filtered Subset 2: CLOSED / SURVEY DATE SCOPE (SLA Attainment, Resolution Time, CSAT)
-  const filteredRequestsClosed = useMemo(() => {
-    const now = new Date(2026, 7, 25);
-    return baseFilteredRequests.filter(r => matchesDateRange(r.closedDate || r.openedDate, now));
-  }, [baseFilteredRequests, datePreset, customStartDate, customEndDate]);
+    return baseFilteredRequests.filter(r => {
+      if (!r.isBacklog) return false;
+      if (r.openedDate && r.openedDate > windowEnd) return false;
+      return true;
+    });
+  }, [baseFilteredRequests, datePreset, customEndDate, asOfDate]);
+
+  // 2. COMPLETED IN PERIOD (Closed Date Scope): Strictly Completed Requests closed within the selected date window
+  const filteredRequestsCompleted = useMemo(() => {
+    return baseFilteredRequests.filter(r => {
+      if (!r.isCompleted) return false;
+      return matchesDateRange(r.closedDate || r.openedDate, asOfDate);
+    });
+  }, [baseFilteredRequests, datePreset, customStartDate, customEndDate, asOfDate]);
+
+  // 3. EFFECTIVE SLA DATASET (Completed in Period + Currently Open Past-Due Breaches)
+  const filteredRequestsEffectiveSLA = useMemo(() => {
+    const openBreaches = filteredRequestsBacklog.filter(r => r.isSLABreached);
+    return [...filteredRequestsCompleted, ...openBreaches];
+  }, [filteredRequestsCompleted, filteredRequestsBacklog]);
+
+  // 4. CSAT DATASET (Survey Submitted Date or Closed Date Scope)
+  const filteredRequestsCSAT = useMemo(() => {
+    return baseFilteredRequests.filter(r => {
+      if (!r.isCompleted && r.csatScore === null) return false;
+      return matchesDateRange(r.surveyDate || r.closedDate || r.openedDate, asOfDate);
+    });
+  }, [baseFilteredRequests, datePreset, customStartDate, customEndDate, asOfDate]);
+
+  // 5. COMBINED DATASET FOR DATA EXPLORER (Completed in Period + Standing Open Backlog, deduplicated)
+  const filteredRequestsCombined = useMemo(() => {
+    const map = new Map();
+    filteredRequestsCompleted.forEach(r => map.set(r.id, r));
+    filteredRequestsBacklog.forEach(r => map.set(r.id, r));
+    return Array.from(map.values());
+  }, [filteredRequestsCompleted, filteredRequestsBacklog]);
 
   return (
     <div className="dashboard-container">
       {/* Header & Drag-and-Drop Area */}
       <DropZoneHeader
         isDemoData={isDemoData}
-        requestCount={rawRequests.length}
+        requestCount={processedRequests.length}
         surveyCount={rawSurveys.length}
+        asOfDate={asOfDate}
         onDataLoaded={handleCustomDataLoaded}
         onResetDemo={loadDemoDataset}
       />
@@ -243,7 +272,6 @@ export default function App() {
         datePreset={datePreset}
         customStartDate={customStartDate}
         customEndDate={customEndDate}
-        statusFilter={statusFilter}
         onDeptToggle={handleDeptToggle}
         onSelectAllDepts={() => setSelectedDepts([])}
         onClearAllDepts={() => setSelectedDepts(['NONE'])}
@@ -259,12 +287,15 @@ export default function App() {
         onDatePresetChange={setDatePreset}
         onCustomStartDateChange={setCustomStartDate}
         onCustomEndDateChange={setCustomEndDate}
-        onStatusFilterChange={setStatusFilter}
         onResetFilters={handleResetFilters}
       />
 
       {/* Executive KPI Summary Banner */}
-      <KPICards requestsOpened={filteredRequestsOpened} requestsClosed={filteredRequestsClosed} />
+      <KPICards
+        requestsBacklog={filteredRequestsBacklog}
+        requestsCompleted={filteredRequestsCompleted}
+        requestsCSAT={filteredRequestsCSAT}
+      />
 
       {/* Navigation Tabs */}
       <div className="tabs-container">
@@ -284,31 +315,34 @@ export default function App() {
           className={`tab-btn ${activeTab === 'backlog' ? 'active' : ''}`}
           onClick={() => setActiveTab('backlog')}
         >
-          <Clock size={16} /> Backlog & Aging
+          <Clock size={16} /> Backlog & Aging ({filteredRequestsBacklog.length})
         </button>
         <button
           className={`tab-btn ${activeTab === 'explorer' ? 'active' : ''}`}
           onClick={() => setActiveTab('explorer')}
         >
-          <Table size={16} /> Data Explorer ({filteredRequestsClosed.length})
+          <Table size={16} /> Data Explorer ({filteredRequestsCombined.length})
         </button>
       </div>
 
       {/* Tab Panels */}
       {activeTab === 'pareto' && (
-        <ParetoChart requests={filteredRequestsClosed} />
+        <ParetoChart
+          requestsEffectiveSLA={filteredRequestsEffectiveSLA}
+          requestsCompleted={filteredRequestsCompleted}
+        />
       )}
 
       {activeTab === 'csat' && (
-        <CSATAnalysis requests={filteredRequestsClosed} />
+        <CSATAnalysis requests={filteredRequestsCSAT} />
       )}
 
       {activeTab === 'backlog' && (
-        <BacklogAnalysis requests={filteredRequestsOpened} />
+        <BacklogAnalysis requests={filteredRequestsBacklog} />
       )}
 
       {activeTab === 'explorer' && (
-        <RequestDataTable requests={filteredRequestsClosed} />
+        <RequestDataTable requests={filteredRequestsCombined} />
       )}
 
       {/* Footer Info */}

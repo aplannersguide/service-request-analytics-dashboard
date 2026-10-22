@@ -112,6 +112,11 @@ export function generateMockDataset() {
       });
     };
 
+    const isSLAWrittenBreached = isCompleted ? (closedDate > dueDate) : (now > dueDate);
+    const followUpCount = isSLAWrittenBreached
+      ? String(2 + (i % 4))
+      : String(i % 3 === 0 ? 1 : 0);
+
     requests.push({
       "Request ID": id,
       "Service Request Type": reqType,
@@ -126,11 +131,10 @@ export function generateMockDataset() {
       "Dispatcher": "Central Dispatch",
       "Service Owner Group": group,
       "Service Owner": owner,
-      "Follow-ups": String(Math.floor(Math.random() * 3))
+      "Follow-ups": followUpCount
     });
 
     if (isCompleted && Math.random() < 0.85) {
-      const isSLAWrittenBreached = closedDate > dueDate;
       
       let score1, score2, score3;
       let comment = "";

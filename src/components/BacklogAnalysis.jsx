@@ -201,7 +201,7 @@ export default function BacklogAnalysis({ requests }) {
             )}
             {selectedAssignee && (
               <span className="badge badge-info" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                Assignee: {selectedAssignee}
+                Service Owner: {selectedAssignee}
                 <X size={11} style={{ cursor: 'pointer' }} onClick={() => setSelectedAssignee(null)} />
               </span>
             )}
@@ -217,12 +217,12 @@ export default function BacklogAnalysis({ requests }) {
       <div className="glass-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
                 <Layers size={18} /> BACKLOG BY SERVICE REQUEST TYPE (CROSS-FILTERS PAGE)
               </div>
-              <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
-                📅 Scoped by Opened Date
+              <span style={{ fontSize: '0.65rem', color: 'var(--rva-navy)', background: 'rgba(38, 70, 119, 0.08)', padding: '2px 7px', borderRadius: '10px', border: '1px solid rgba(38, 70, 119, 0.2)', fontWeight: 600 }}>
+                📌 Standing Open Queue
               </span>
             </div>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
@@ -308,11 +308,11 @@ export default function BacklogAnalysis({ requests }) {
           </div>
         </div>
 
-        {/* Workload by Assignee */}
+        {/* Workload by Service Owner */}
         <div className="glass-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
-              <UserCheck size={18} /> WORKLOAD BY ASSIGNEE (CROSS-FILTERS PAGE)
+              <UserCheck size={18} /> WORKLOAD BY SERVICE OWNER (CROSS-FILTERS PAGE)
             </div>
             {selectedAssignee && (
               <button
@@ -370,10 +370,10 @@ export default function BacklogAnalysis({ requests }) {
             <thead style={{ position: 'sticky', top: 0, zIndex: 10 }}>
               <tr>
                 <th>Request ID</th>
-                <th>Dept</th>
-                <th>Unit Group</th>
-                <th>Request Type</th>
-                <th>Assignee</th>
+                <th>Department</th>
+                <th>Owner Group</th>
+                <th>Service Request Type</th>
+                <th>Service Owner</th>
                 <th>Priority</th>
                 <th>Due Date</th>
                 <th>Age (Days)</th>

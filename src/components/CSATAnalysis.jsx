@@ -1,14 +1,35 @@
 import React, { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Star, MessageSquare, Search, Award, AlertTriangle, Filter, RotateCcw, X, Tag } from 'lucide-react';
+import { Star, MessageSquare, Search, Award, AlertTriangle, Filter, RotateCcw, X, Tag, RefreshCw } from 'lucide-react';
 
 export default function CSATAnalysis({ requests }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeStarFilter, setActiveStarFilter] = useState('ALL');
   const [activeLowTypeFilter, setActiveLowTypeFilter] = useState(null);
-  const [activeKeywordFilter, setActiveKeywordFilter] = useState(null); // String or null
+  const [activeKeywordFilter, setActiveKeywordFilter] = useState(null);
+  const [highFollowUpOnly, setHighFollowUpOnly] = useState(false);
 
   const requestsWithCSAT = requests.filter(r => r.csatScore !== null);
+
+  // Calculate 3 Survey Dimensions & Follow-Up Friction Metrics
+  const calcAvg = (items, getter) => {
+    const valid = items.map(getter).filter(v => v !== null && v !== undefined && !isNaN(v));
+    if (valid.length === 0) return 'N/A';
+    return (valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(1);
+  };
+
+  const avgOverallDim = calcAvg(requestsWithCSAT, r => r.csatDimensions?.overall ?? r.csatScore);
+  const avgExplanationDim = calcAvg(requestsWithCSAT, r => r.csatDimensions?.explanation);
+  const avgQualityDim = calcAvg(requestsWithCSAT, r => r.csatDimensions?.quality);
+
+  const dissatisfiedReqs = requestsWithCSAT.filter(r => r.csatScore < 3);
+  const satisfiedReqs = requestsWithCSAT.filter(r => r.csatScore >= 4);
+  const avgFollowUpsLowCSAT = calcAvg(dissatisfiedReqs, r => r.followUps || 0);
+  const avgFollowUpsHighCSAT = calcAvg(satisfiedReqs, r => r.followUps || 0);
+  const highFollowUpCount = requestsWithCSAT.filter(r => (r.followUps || 0) >= 2).length;
+  const highFollowUpPct = requestsWithCSAT.length > 0
+    ? Math.round((highFollowUpCount / requestsWithCSAT.length) * 100)
+    : 0;
 
   // 1. Cross-Filtered Data for CSAT Rating Distribution Chart
   const requestsForDistChart = requestsWithCSAT.filter(r => {
@@ -16,6 +37,7 @@ export default function CSATAnalysis({ requests }) {
       const fullType = `${r.department} - ${r.serviceType}`;
       if (fullType !== activeLowTypeFilter && r.serviceType !== activeLowTypeFilter) return false;
     }
+    if (highFollowUpOnly && (r.followUps || 0) < 2) return false;
     return true;
   });
 
@@ -57,6 +79,7 @@ export default function CSATAnalysis({ requests }) {
     if (r.csatScore >= 3) return false;
     if (activeStarFilter === 1 && Math.round(r.csatScore) !== 1) return false;
     if (activeStarFilter === 2 && Math.round(r.csatScore) !== 2) return false;
+    if (highFollowUpOnly && (r.followUps || 0) < 2) return false;
     return true;
   });
 
@@ -91,10 +114,10 @@ export default function CSATAnalysis({ requests }) {
     }]
   };
 
-  // 3. Extract Customer Comments & FEATURE 4: Complaint Keyword Extractor
+  // 3. Extract Customer Comments & Complaint Keyword Extractor
   const allComments = [];
   const wordFreqMap = {};
-  const stopWords = new Set(['the', 'and', 'was', 'for', 'with', 'this', 'that', 'were', 'have', 'from', 'this', 'your', 'service', 'request']);
+  const stopWords = new Set(['the', 'and', 'was', 'for', 'with', 'this', 'that', 'were', 'have', 'from', 'your', 'service', 'request']);
 
   requests.forEach(r => {
     if (r.comments && r.comments.length > 0) {
@@ -102,10 +125,11 @@ export default function CSATAnalysis({ requests }) {
         allComments.push({
           reqId: r.id,
           dept: r.department,
-          unit: r.ownerGroup,
+          ownerGroup: r.ownerGroup,
           type: r.serviceType,
           fullTypeLabel: `${r.department} - ${r.serviceType}`,
           csat: r.csatScore,
+          followUps: r.followUps || 0,
           comment: c
         });
 
@@ -141,10 +165,14 @@ export default function CSATAnalysis({ requests }) {
       if (!c.comment.toLowerCase().includes(activeKeywordFilter.toLowerCase())) return false;
     }
 
+    if (highFollowUpOnly && c.followUps < 2) {
+      return false;
+    }
+
     const term = searchTerm.toLowerCase();
     return (
       c.comment.toLowerCase().includes(term) ||
-      c.unit.toLowerCase().includes(term) ||
+      c.ownerGroup.toLowerCase().includes(term) ||
       c.type.toLowerCase().includes(term) ||
       c.dept.toLowerCase().includes(term) ||
       c.reqId.toLowerCase().includes(term)
@@ -171,13 +199,72 @@ export default function CSATAnalysis({ requests }) {
     setActiveStarFilter('ALL');
     setActiveLowTypeFilter(null);
     setActiveKeywordFilter(null);
+    setHighFollowUpOnly(false);
   };
 
-  const isChartFilterActive = activeStarFilter !== 'ALL' || activeLowTypeFilter !== null || activeKeywordFilter !== null;
+  const isChartFilterActive = activeStarFilter !== 'ALL' || activeLowTypeFilter !== null || activeKeywordFilter !== null || highFollowUpOnly;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       
+      {/* 4-Card Survey Dimensions & Follow-Up Friction Summary Strip */}
+      <div className="kpi-grid">
+        <div className="glass-card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '3px solid var(--rva-navy)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+            1. Overall Satisfaction
+          </span>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+            <span style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--rva-dark)' }}>{avgOverallDim}</span>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>/ 5.0</span>
+          </div>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+            "What was your overall satisfaction with your service request?"
+          </span>
+        </div>
+
+        <div className="glass-card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '3px solid var(--rva-navy)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+            2. Process Explanation
+          </span>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+            <span style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--rva-dark)' }}>{avgExplanationDim}</span>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>/ 5.0</span>
+          </div>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+            "How satisfied are you with the explanation of what would happen next?"
+          </span>
+        </div>
+
+        <div className="glass-card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '3px solid var(--rva-navy)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+            3. Service Quality
+          </span>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+            <span style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--rva-dark)' }}>{avgQualityDim}</span>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>/ 5.0</span>
+          </div>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+            "How satisfied are you with the quality of the service provided?"
+          </span>
+        </div>
+
+        <div className="glass-card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '3px solid var(--rva-red)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--rva-red)', textTransform: 'uppercase' }}>
+              Resident Follow-Up Friction
+            </span>
+            <RefreshCw size={14} style={{ color: 'var(--rva-red)' }} />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+            <span style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--rva-dark)' }}>{highFollowUpPct}%</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>needed 2+ follow-ups</span>
+          </div>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+            Avg <strong style={{ color: 'var(--rva-red)' }}>{avgFollowUpsLowCSAT} follow-ups</strong> on &lt;3★ vs. <strong>{avgFollowUpsHighCSAT}</strong> on ≥4★
+          </span>
+        </div>
+      </div>
+
       {/* Active Drill-Down Banner */}
       {isChartFilterActive && (
         <div style={{
@@ -186,7 +273,7 @@ export default function CSATAnalysis({ requests }) {
           borderRadius: 'var(--radius-sm)',
           padding: '10px 16px',
           display: 'flex',
-          justify: 'space-between',
+          justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: '12px'
@@ -213,6 +300,12 @@ export default function CSATAnalysis({ requests }) {
                 <X size={11} style={{ cursor: 'pointer' }} onClick={() => setActiveKeywordFilter(null)} />
               </span>
             )}
+            {highFollowUpOnly && (
+              <span className="badge badge-danger" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                High Follow-Ups (2+)
+                <X size={11} style={{ cursor: 'pointer' }} onClick={() => setHighFollowUpOnly(false)} />
+              </span>
+            )}
           </div>
 
           <button className="btn btn-outline" style={{ padding: '4px 10px', fontSize: '0.75rem' }} onClick={handleResetChartFilters}>
@@ -226,12 +319,12 @@ export default function CSATAnalysis({ requests }) {
         {/* CSAT Rating Distribution */}
         <div className="glass-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
                 <Award size={18} /> CSAT RATING DISTRIBUTION (CROSS-FILTERS PAGE)
               </div>
               <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
-                📅 Scoped by Closed/Survey Date
+                📅 Scoped by Survey / Closed Date
               </span>
             </div>
             {activeStarFilter !== 'ALL' && (
@@ -302,7 +395,7 @@ export default function CSATAnalysis({ requests }) {
         </div>
       </div>
 
-      {/* FEATURE 4: Automated Complaint Keyword / Theme Badges */}
+      {/* Automated Complaint Keyword / Theme Badges */}
       {topComplaintKeywords.length > 0 && (
         <div className="glass-card" style={{ padding: '14px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--rva-red)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -343,7 +436,7 @@ export default function CSATAnalysis({ requests }) {
               </span>
             </div>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-              Filtered synchronously by active chart selections and complaint keywords.
+              Filtered synchronously by active chart selections, follow-up friction, and complaint keywords.
             </p>
           </div>
 
@@ -360,10 +453,10 @@ export default function CSATAnalysis({ requests }) {
           </div>
         </div>
 
-        {/* Star Rating Filter Chips */}
+        {/* Star Rating & Follow-Up Friction Filter Chips */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Filter size={12} /> Rating Chips:
+            <Filter size={12} /> Filter Chips:
           </span>
           <button
             className={`btn ${activeStarFilter === 'ALL' ? 'btn-primary' : 'btn-outline'}`}
@@ -390,6 +483,20 @@ export default function CSATAnalysis({ requests }) {
               {star} Star{star > 1 ? 's' : ''} ({ratingCounts[star]})
             </button>
           ))}
+
+          <button
+            className={`btn ${highFollowUpOnly ? 'btn-primary' : 'btn-outline'}`}
+            style={{
+              padding: '4px 10px',
+              fontSize: '0.75rem',
+              borderColor: 'var(--rva-navy)',
+              background: highFollowUpOnly ? 'var(--rva-navy)' : '#ffffff',
+              color: highFollowUpOnly ? '#ffffff' : 'var(--rva-navy)'
+            }}
+            onClick={() => setHighFollowUpOnly(prev => !prev)}
+          >
+            🔄 High Follow-Ups (2+)
+          </button>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '14px', maxHeight: '380px', overflowY: 'auto', paddingRight: '4px' }}>
@@ -411,13 +518,18 @@ export default function CSATAnalysis({ requests }) {
                   gap: '8px'
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
                   <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--rva-navy)' }}>
-                    [{item.dept}] #{item.reqId} • {item.unit}
+                    [{item.dept}] #{item.reqId} • {item.ownerGroup}
                   </span>
-                  <span className={`badge ${item.csat && item.csat >= 4 ? 'badge-success' : item.csat && item.csat < 3 ? 'badge-danger' : 'badge-warning'}`}>
-                    CSAT {item.csat ? `${item.csat}/5` : 'N/A'}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span className={`badge ${item.followUps >= 2 ? 'badge-danger' : 'badge-info'}`} style={{ fontSize: '0.7rem' }}>
+                      🔄 {item.followUps} Follow-up{item.followUps === 1 ? '' : 's'}
+                    </span>
+                    <span className={`badge ${item.csat && item.csat >= 4 ? 'badge-success' : item.csat && item.csat < 3 ? 'badge-danger' : 'badge-warning'}`}>
+                      CSAT {item.csat ? `${item.csat}/5` : 'N/A'}
+                    </span>
+                  </div>
                 </div>
                 <p style={{ fontSize: '0.875rem', color: 'var(--text-main)', fontStyle: 'italic', lineHeight: '1.4' }}>
                   "{item.comment}"
