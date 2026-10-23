@@ -1,7 +1,7 @@
 import React from 'react';
-import { Star, Clock, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown } from 'lucide-react';
+import { Star, Clock, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, Info } from 'lucide-react';
 
-export default function KPICards({ requestsBacklog = [], requestsCompleted = [], requestsCSAT = [] }) {
+export default function KPICards({ requestsBacklog = [], requestsCompleted = [], requestsCSAT = [], onOpenMethodology }) {
   // 1. CSAT Calculation (Scoped by Survey / Closed Date)
   const csatItems = requestsCSAT.filter(r => r.csatScore !== null);
   const avgCSAT = csatItems.length > 0
@@ -41,13 +41,27 @@ export default function KPICards({ requestsBacklog = [], requestsCompleted = [],
       {/* CSAT Card */}
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '3px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
               Avg Customer Satisfaction
             </span>
-            <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
+            <button
+              type="button"
+              className="info-icon-btn"
+              onClick={() => onOpenMethodology && onOpenMethodology('kpi-csat')}
+              title="How Avg Customer Satisfaction is calculated"
+              aria-label="Avg Customer Satisfaction Methodology"
+            >
+              <Info size={12} />
+            </button>
+            <button
+              type="button"
+              className="scope-badge-btn"
+              onClick={() => onOpenMethodology && onOpenMethodology('date-scoping')}
+              title="Click to learn about Survey / Closed Date scoping"
+            >
               📅 Survey / Closed Date
-            </span>
+            </button>
           </div>
           <div style={{ background: 'rgba(38, 70, 119, 0.08)', padding: '6px', borderRadius: '8px', color: 'var(--rva-navy)' }}>
             <Star size={18} />
@@ -79,13 +93,27 @@ export default function KPICards({ requestsBacklog = [], requestsCompleted = [],
       {/* Effective SLA Attainment Card */}
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '3px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
               Effective SLA Attainment
             </span>
-            <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }} title="Includes Completed Requests in window plus currently Open Past-Due requests">
+            <button
+              type="button"
+              className="info-icon-btn"
+              onClick={() => onOpenMethodology && onOpenMethodology('kpi-effective-sla')}
+              title="How Effective SLA Attainment is calculated"
+              aria-label="Effective SLA Attainment Methodology"
+            >
+              <Info size={12} />
+            </button>
+            <button
+              type="button"
+              className="scope-badge-btn"
+              onClick={() => onOpenMethodology && onOpenMethodology('date-scoping')}
+              title="Click to learn about Closed + Open Overdue scoping"
+            >
               📅 Closed + Open Overdue
-            </span>
+            </button>
           </div>
           <div style={{ background: 'rgba(38, 70, 119, 0.08)', padding: '6px', borderRadius: '8px', color: 'var(--rva-navy)' }}>
             <CheckCircle2 size={18} />
@@ -113,13 +141,27 @@ export default function KPICards({ requestsBacklog = [], requestsCompleted = [],
       {/* Standing Backlog Card */}
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '3px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
               Active Backlog Count
             </span>
-            <span style={{ fontSize: '0.65rem', color: 'var(--rva-navy)', background: 'rgba(38, 70, 119, 0.08)', padding: '2px 7px', borderRadius: '10px', border: '1px solid rgba(38, 70, 119, 0.2)', fontWeight: 600 }}>
+            <button
+              type="button"
+              className="info-icon-btn"
+              onClick={() => onOpenMethodology && onOpenMethodology('kpi-backlog')}
+              title="How Active Backlog Count is calculated"
+              aria-label="Active Backlog Methodology"
+            >
+              <Info size={12} />
+            </button>
+            <button
+              type="button"
+              className="scope-badge-btn standing-queue"
+              onClick={() => onOpenMethodology && onOpenMethodology('date-scoping')}
+              title="Click to learn about Standing Open Queue scoping"
+            >
               📌 Standing Open Queue
-            </span>
+            </button>
           </div>
           <div style={{ background: 'rgba(170, 36, 42, 0.08)', padding: '6px', borderRadius: '8px', color: 'var(--rva-red)' }}>
             <AlertTriangle size={18} />
@@ -141,13 +183,27 @@ export default function KPICards({ requestsBacklog = [], requestsCompleted = [],
       {/* Avg Resolution Time Card */}
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '3px solid var(--rva-navy)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
               Avg Resolution Time
             </span>
-            <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
+            <button
+              type="button"
+              className="info-icon-btn"
+              onClick={() => onOpenMethodology && onOpenMethodology('kpi-resolution-time')}
+              title="How Avg Resolution Time is calculated"
+              aria-label="Avg Resolution Time Methodology"
+            >
+              <Info size={12} />
+            </button>
+            <button
+              type="button"
+              className="scope-badge-btn"
+              onClick={() => onOpenMethodology && onOpenMethodology('date-scoping')}
+              title="Click to learn about Closed Date scoping"
+            >
               📅 Closed Date
-            </span>
+            </button>
           </div>
           <div style={{ background: 'rgba(38, 70, 119, 0.08)', padding: '6px', borderRadius: '8px', color: 'var(--rva-navy)' }}>
             <Clock size={18} />

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { UploadCloud, RefreshCw, Database, FileSpreadsheet, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
+import { UploadCloud, RefreshCw, Database, FileSpreadsheet, CheckCircle, AlertCircle, BookOpen } from 'lucide-react';
 import { readFileAsText, parseRawCSVText } from '../services/dataParser';
 
-export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, asOfDate, onDataLoaded, onResetDemo }) {
+export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, asOfDate, onDataLoaded, onResetDemo, onOpenMethodology }) {
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
@@ -113,19 +113,34 @@ export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, 
             <span style={{ fontSize: '0.8rem', color: 'var(--rva-navy)', background: '#f1f5f9', padding: '4px 10px', borderRadius: '12px', border: '1px solid #cbd5e1', fontWeight: 600 }}>
               📊 {requestCount} Active/Completed Requests • 💬 {surveyCount} Survey Rows
             </span>
-            <span style={{ fontSize: '0.8rem', color: 'var(--rva-dark)', background: '#f8fafc', padding: '4px 10px', borderRadius: '12px', border: '1px solid #cbd5e1', fontWeight: 600 }} title="Dynamic dataset snapshot date derived from latest timestamp">
+            <button
+              type="button"
+              className="scope-badge-btn"
+              style={{ fontSize: '0.8rem', padding: '4px 10px', borderRadius: '12px', color: 'var(--rva-dark)', background: '#f8fafc', borderColor: '#cbd5e1' }}
+              onClick={() => onOpenMethodology && onOpenMethodology('date-scoping')}
+              title="Click to view how the Data As-Of snapshot anchor and date scoping work"
+            >
               📅 Data As Of: {formattedAsOfDate}
-            </span>
+            </button>
           </div>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '4px' }}>
             Root-cause driver diagnostics for Customer Satisfaction (CSAT), SLA compliance breaches, and active backlog.
           </p>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={() => onOpenMethodology && onOpenMethodology(null)}
+            style={{ padding: '7px 13px', fontSize: '0.8rem' }}
+            title="View metric formulas, date scoping rules, and chart definitions"
+          >
+            <BookOpen size={14} /> Methodology & Definitions
+          </button>
           {!isDemoData && (
-            <button className="btn btn-outline" onClick={onResetDemo} title="Reset to interactive demo dataset">
-              <RefreshCw size={15} /> Reset to Demo
+            <button className="btn btn-outline" onClick={onResetDemo} title="Reset to interactive demo dataset" style={{ padding: '7px 13px', fontSize: '0.8rem' }}>
+              <RefreshCw size={14} /> Reset to Demo
             </button>
           )}
         </div>

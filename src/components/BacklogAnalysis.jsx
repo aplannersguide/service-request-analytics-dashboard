@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Clock, AlertOctagon, UserCheck, ShieldAlert, Layers, RotateCcw, Filter, X, CheckCircle2 } from 'lucide-react';
+import { Clock, AlertOctagon, UserCheck, ShieldAlert, Layers, RotateCcw, Filter, X, CheckCircle2, Info } from 'lucide-react';
 
-export default function BacklogAnalysis({ requests }) {
+export default function BacklogAnalysis({ requests, onOpenMethodology }) {
   const backlogRequests = requests.filter(r => r.isBacklog);
 
   // Interactive Multi-Dimensional Drill-Down Filter States
@@ -221,9 +221,23 @@ export default function BacklogAnalysis({ requests }) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
                 <Layers size={18} /> BACKLOG BY SERVICE REQUEST TYPE (CROSS-FILTERS PAGE)
               </div>
-              <span style={{ fontSize: '0.65rem', color: 'var(--rva-navy)', background: 'rgba(38, 70, 119, 0.08)', padding: '2px 7px', borderRadius: '10px', border: '1px solid rgba(38, 70, 119, 0.2)', fontWeight: 600 }}>
+              <button
+                type="button"
+                className="info-icon-btn"
+                onClick={() => onOpenMethodology && onOpenMethodology('chart-backlog-type')}
+                title="How Backlog by Service Request Type & Cross-Filtering work"
+                aria-label="Backlog by Service Request Type Methodology"
+              >
+                <Info size={12} />
+              </button>
+              <button
+                type="button"
+                className="scope-badge-btn standing-queue"
+                onClick={() => onOpenMethodology && onOpenMethodology('date-scoping')}
+                title="Click to learn about Standing Open Queue scoping"
+              >
                 📌 Standing Open Queue
-              </span>
+              </button>
             </div>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
               Click any bar to drill down into aging and workload distribution for that category.
@@ -270,8 +284,19 @@ export default function BacklogAnalysis({ requests }) {
         {/* Backlog Aging Buckets */}
         <div className="glass-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-red)', fontWeight: 700 }}>
-              <Clock size={18} /> AGING DISTRIBUTION (CROSS-FILTERS PAGE)
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-red)', fontWeight: 700 }}>
+                <Clock size={18} /> AGING DISTRIBUTION (CROSS-FILTERS PAGE)
+              </div>
+              <button
+                type="button"
+                className="info-icon-btn"
+                onClick={() => onOpenMethodology && onOpenMethodology('chart-backlog-aging')}
+                title="How Backlog Aging Buckets are calculated"
+                aria-label="Backlog Aging Distribution Methodology"
+              >
+                <Info size={12} />
+              </button>
             </div>
             {selectedAgingBucket && (
               <button
@@ -311,8 +336,19 @@ export default function BacklogAnalysis({ requests }) {
         {/* Workload by Service Owner */}
         <div className="glass-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
-              <UserCheck size={18} /> WORKLOAD BY SERVICE OWNER (CROSS-FILTERS PAGE)
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
+                <UserCheck size={18} /> WORKLOAD BY SERVICE OWNER (CROSS-FILTERS PAGE)
+              </div>
+              <button
+                type="button"
+                className="info-icon-btn"
+                onClick={() => onOpenMethodology && onOpenMethodology('chart-backlog-owner')}
+                title="How Service Owner Workload & Cross-Filtering work"
+                aria-label="Workload by Service Owner Methodology"
+              >
+                <Info size={12} />
+              </button>
             </div>
             {selectedAssignee && (
               <button

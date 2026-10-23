@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Star, MessageSquare, Search, Award, AlertTriangle, Filter, RotateCcw, X, Tag, RefreshCw } from 'lucide-react';
+import { Star, MessageSquare, Search, Award, AlertTriangle, Filter, RotateCcw, X, Tag, RefreshCw, Info } from 'lucide-react';
 
-export default function CSATAnalysis({ requests }) {
+export default function CSATAnalysis({ requests, onOpenMethodology }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeStarFilter, setActiveStarFilter] = useState('ALL');
   const [activeLowTypeFilter, setActiveLowTypeFilter] = useState(null);
@@ -210,9 +210,20 @@ export default function CSATAnalysis({ requests }) {
       {/* 4-Card Survey Dimensions & Follow-Up Friction Summary Strip */}
       <div className="kpi-grid">
         <div className="glass-card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '3px solid var(--rva-navy)' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
-            1. Overall Satisfaction
-          </span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+              1. Overall Satisfaction
+            </span>
+            <button
+              type="button"
+              className="info-icon-btn"
+              onClick={() => onOpenMethodology && onOpenMethodology('chart-csat-dimensions')}
+              title="How Survey Dimensions & Follow-Up Friction work"
+              aria-label="Overall Satisfaction Dimension Methodology"
+            >
+              <Info size={12} />
+            </button>
+          </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
             <span style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--rva-dark)' }}>{avgOverallDim}</span>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>/ 5.0</span>
@@ -223,9 +234,20 @@ export default function CSATAnalysis({ requests }) {
         </div>
 
         <div className="glass-card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '3px solid var(--rva-navy)' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
-            2. Process Explanation
-          </span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+              2. Process Explanation
+            </span>
+            <button
+              type="button"
+              className="info-icon-btn"
+              onClick={() => onOpenMethodology && onOpenMethodology('chart-csat-dimensions')}
+              title="How Survey Dimensions & Follow-Up Friction work"
+              aria-label="Process Explanation Dimension Methodology"
+            >
+              <Info size={12} />
+            </button>
+          </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
             <span style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--rva-dark)' }}>{avgExplanationDim}</span>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>/ 5.0</span>
@@ -236,9 +258,20 @@ export default function CSATAnalysis({ requests }) {
         </div>
 
         <div className="glass-card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '3px solid var(--rva-navy)' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
-            3. Service Quality
-          </span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+              3. Service Quality
+            </span>
+            <button
+              type="button"
+              className="info-icon-btn"
+              onClick={() => onOpenMethodology && onOpenMethodology('chart-csat-dimensions')}
+              title="How Survey Dimensions & Follow-Up Friction work"
+              aria-label="Service Quality Dimension Methodology"
+            >
+              <Info size={12} />
+            </button>
+          </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
             <span style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--rva-dark)' }}>{avgQualityDim}</span>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>/ 5.0</span>
@@ -250,9 +283,20 @@ export default function CSATAnalysis({ requests }) {
 
         <div className="glass-card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '6px', borderTop: '3px solid var(--rva-red)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--rva-red)', textTransform: 'uppercase' }}>
-              Resident Follow-Up Friction
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--rva-red)', textTransform: 'uppercase' }}>
+                Resident Follow-Up Friction
+              </span>
+              <button
+                type="button"
+                className="info-icon-btn"
+                onClick={() => onOpenMethodology && onOpenMethodology('chart-csat-dimensions')}
+                title="How Resident Follow-Up Friction is calculated"
+                aria-label="Resident Follow-Up Friction Methodology"
+              >
+                <Info size={12} />
+              </button>
+            </div>
             <RefreshCw size={14} style={{ color: 'var(--rva-red)' }} />
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
@@ -319,13 +363,27 @@ export default function CSATAnalysis({ requests }) {
         {/* CSAT Rating Distribution */}
         <div className="glass-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
                 <Award size={18} /> CSAT RATING DISTRIBUTION (CROSS-FILTERS PAGE)
               </div>
-              <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
+              <button
+                type="button"
+                className="info-icon-btn"
+                onClick={() => onOpenMethodology && onOpenMethodology('chart-csat-dist')}
+                title="How CSAT Rating Distribution & Cross-Filtering work"
+                aria-label="CSAT Rating Distribution Methodology"
+              >
+                <Info size={12} />
+              </button>
+              <button
+                type="button"
+                className="scope-badge-btn"
+                onClick={() => onOpenMethodology && onOpenMethodology('date-scoping')}
+                title="Click to learn about Survey / Closed Date scoping"
+              >
                 📅 Scoped by Survey / Closed Date
-              </span>
+              </button>
             </div>
             {activeStarFilter !== 'ALL' && (
               <button
@@ -360,8 +418,19 @@ export default function CSATAnalysis({ requests }) {
         {/* Low CSAT Drivers Breakdown */}
         <div className="glass-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-red)', fontWeight: 700 }}>
-              <AlertTriangle size={18} /> TOP LOW CSAT DRIVERS (CROSS-FILTERS PAGE)
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-red)', fontWeight: 700 }}>
+                <AlertTriangle size={18} /> TOP LOW CSAT DRIVERS (CROSS-FILTERS PAGE)
+              </div>
+              <button
+                type="button"
+                className="info-icon-btn"
+                onClick={() => onOpenMethodology && onOpenMethodology('chart-csat-dist')}
+                title="How Low CSAT Drivers & Cross-Filtering work"
+                aria-label="Top Low CSAT Drivers Methodology"
+              >
+                <Info size={12} />
+              </button>
             </div>
             {activeLowTypeFilter && (
               <button

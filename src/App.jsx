@@ -6,17 +6,23 @@ import ParetoChart from './components/ParetoChart';
 import CSATAnalysis from './components/CSATAnalysis';
 import BacklogAnalysis from './components/BacklogAnalysis';
 import RequestDataTable from './components/RequestDataTable';
+import MethodologyModal from './components/MethodologyModal';
 
 import { generateMockDataset } from './services/mockData';
 import { processRawDatasets, computeDatasetAsOfDate } from './services/dataParser';
 import { saveLocalData, getLocalData, clearLocalData } from './services/storageService';
-import { BarChart3, Star, Clock, Table } from 'lucide-react';
+import { BarChart3, Star, Clock, Table, BookOpen } from 'lucide-react';
 
 export default function App() {
   const [isDemoData, setIsDemoData] = useState(true);
   const [rawRequests, setRawRequests] = useState([]);
   const [rawSurveys, setRawSurveys] = useState([]);
   const [activeTab, setActiveTab] = useState('pareto');
+  const [methodologyModal, setMethodologyModal] = useState({ isOpen: false, sectionId: null });
+
+  const handleOpenMethodology = (sectionId = null) => {
+    setMethodologyModal({ isOpen: true, sectionId });
+  };
 
   // Multi-Select Hierarchy Filter States (Department -> Owner Group -> Service Owner -> Service Request Type)
   const [selectedDepts, setSelectedDepts] = useState([]);
@@ -257,6 +263,7 @@ export default function App() {
         asOfDate={asOfDate}
         onDataLoaded={handleCustomDataLoaded}
         onResetDemo={loadDemoDataset}
+        onOpenMethodology={handleOpenMethodology}
       />
 
       {/* Global Filter Toolbar */}
@@ -295,6 +302,7 @@ export default function App() {
         requestsBacklog={filteredRequestsBacklog}
         requestsCompleted={filteredRequestsCompleted}
         requestsCSAT={filteredRequestsCSAT}
+        onOpenMethodology={handleOpenMethodology}
       />
 
       {/* Navigation Tabs */}
@@ -330,24 +338,60 @@ export default function App() {
         <ParetoChart
           requestsEffectiveSLA={filteredRequestsEffectiveSLA}
           requestsCompleted={filteredRequestsCompleted}
+          onOpenMethodology={handleOpenMethodology}
         />
       )}
 
       {activeTab === 'csat' && (
-        <CSATAnalysis requests={filteredRequestsCSAT} />
+        <CSATAnalysis
+          requests={filteredRequestsCSAT}
+          onOpenMethodology={handleOpenMethodology}
+        />
       )}
 
       {activeTab === 'backlog' && (
-        <BacklogAnalysis requests={filteredRequestsBacklog} />
+        <BacklogAnalysis
+          requests={filteredRequestsBacklog}
+          onOpenMethodology={handleOpenMethodology}
+        />
       )}
 
       {activeTab === 'explorer' && (
-        <RequestDataTable requests={filteredRequestsCombined} />
+        <RequestDataTable
+          requests={filteredRequestsCombined}
+          onOpenMethodology={handleOpenMethodology}
+        />
       )}
 
+      {/* Methodology & Definitions Modal */}
+      <MethodologyModal
+        isOpen={methodologyModal.isOpen}
+        focusSectionId={methodologyModal.sectionId}
+        onClose={() => setMethodologyModal({ isOpen: false, sectionId: null })}
+      />
+
       {/* Footer Info */}
-      <footer style={{ textAlign: 'center', padding: '16px 0', fontSize: '0.8rem', color: 'var(--text-dim)' }}>
-        Service Request & CSAT Business Data Analytics Dashboard • Operating locally via client-side HTML5 & IndexedDB
+      <footer style={{ textAlign: 'center', padding: '16px 0', fontSize: '0.8rem', color: 'var(--text-dim)', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+        <span>Service Request & CSAT Business Data Analytics Dashboard • Operating locally via client-side HTML5 & IndexedDB</span>
+        <span>•</span>
+        <button
+          type="button"
+          onClick={() => handleOpenMethodology(null)}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'var(--rva-navy)',
+            fontWeight: 600,
+            fontSize: '0.8rem',
+            cursor: 'pointer',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px',
+            textDecoration: 'underline'
+          }}
+        >
+          <BookOpen size={13} /> View Methodology & Metric Definitions
+        </button>
       </footer>
     </div>
   );

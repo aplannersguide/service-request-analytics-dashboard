@@ -332,3 +332,114 @@ h1, h2, h3, h4 {
 .custom-table tbody tr:hover {
   background: #f8fafc;
 }
+
+/* Info Icon Button & Clickable Date Scope Badges */
+.info-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(38, 70, 119, 0.25);
+  background: rgba(38, 70, 119, 0.06);
+  color: var(--rva-navy);
+  cursor: pointer;
+  padding: 0;
+  transition: var(--transition-smooth);
+  flex-shrink: 0;
+}
+
+.info-icon-btn:hover {
+  background: var(--rva-navy);
+  color: #ffffff;
+  border-color: var(--rva-navy);
+  transform: scale(1.08);
+}
+
+.scope-badge-btn {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  background: #f1f5f9;
+  padding: 2px 7px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-family);
+}
+
+.scope-badge-btn:hover {
+  border-color: var(--rva-navy);
+  color: var(--rva-navy);
+  background: rgba(38, 70, 119, 0.08);
+}
+
+.scope-badge-btn.standing-queue {
+  color: var(--rva-navy);
+  background: rgba(38, 70, 119, 0.08);
+  border-color: rgba(38, 70, 119, 0.2);
+}
+
+.scope-badge-btn.standing-queue:hover {
+  background: rgba(38, 70, 119, 0.16);
+  border-color: var(--rva-navy);
+}
+
+/* Native Modal Dialog for Methodology & Definitions */
+dialog.methodology-dialog {
+  margin: auto;
+  width: min(980px, 94vw);
+  max-height: 88vh;
+  border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  color: var(--text-main);
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.28);
+  padding: 0;
+  overflow: hidden;
+}
+
+dialog.methodology-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+dialog.methodology-dialog::backdrop {
+  background-color: rgba(15, 23, 42, 0.48);
+  backdrop-filter: blur(4px);
+}
+
+.methodology-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-margin-top: 16px;
+  transition: all 0.3s ease;
+}
+
+.methodology-card.highlighted {
+  border: 2px solid var(--rva-navy);
+  background: rgba(127, 177, 229, 0.1);
+  box-shadow: 0 0 0 4px rgba(38, 70, 119, 0.12);
+}
+
+.formula-box {
+  background: #f0f4f8;
+  border-left: 4px solid var(--rva-navy);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 0.84rem;
+  color: var(--rva-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Search, FileText, X, CheckCircle, AlertTriangle, Star, ShieldAlert } from 'lucide-react';
+import { Search, FileText, X, CheckCircle, AlertTriangle, Star, ShieldAlert, Info } from 'lucide-react';
 
-export default function RequestDataTable({ requests }) {
+export default function RequestDataTable({ requests, onOpenMethodology }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -33,11 +33,25 @@ export default function RequestDataTable({ requests }) {
     <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Service Requests Explorer</h3>
-            <span style={{ fontSize: '0.65rem', color: 'var(--rva-navy)', background: 'rgba(38, 70, 119, 0.08)', padding: '2px 7px', borderRadius: '10px', border: '1px solid rgba(38, 70, 119, 0.2)', fontWeight: 600 }}>
+            <button
+              type="button"
+              className="info-icon-btn"
+              onClick={() => onOpenMethodology && onOpenMethodology('table-explorer')}
+              title="How the Data Explorer combined dataset works"
+              aria-label="Service Requests Explorer Methodology"
+            >
+              <Info size={12} />
+            </button>
+            <button
+              type="button"
+              className="scope-badge-btn standing-queue"
+              onClick={() => onOpenMethodology && onOpenMethodology('date-scoping')}
+              title="Click to learn about Combined Dataset scoping"
+            >
               📅 Combined Dataset (Completed in Window + Standing Open Queue)
-            </span>
+            </button>
           </div>
           <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
             Showing {filteredRequests.length} matching records across completed requests and standing backlog.

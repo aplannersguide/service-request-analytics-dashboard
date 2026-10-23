@@ -5,7 +5,7 @@ import { BarChart2, Info, Clock } from 'lucide-react';
 
 ChartJS.register(...registerables);
 
-export default function ParetoChart({ requestsEffectiveSLA = [], requestsCompleted = [] }) {
+export default function ParetoChart({ requestsEffectiveSLA = [], requestsCompleted = [], onOpenMethodology }) {
   const [groupBy, setGroupBy] = useState('serviceType'); // 'serviceType', 'ownerGroup', 'owner'
   const [breachScope, setBreachScope] = useState('ALL'); // 'ALL', 'CLOSED', 'OPEN'
 
@@ -200,13 +200,27 @@ export default function ParetoChart({ requestsEffectiveSLA = [], requestsComplet
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-red)', fontWeight: 700 }}>
                 <BarChart2 size={18} /> PARETO ANALYSIS: SLA BREACH DRIVERS
               </div>
-              <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
+              <button
+                type="button"
+                className="info-icon-btn"
+                onClick={() => onOpenMethodology && onOpenMethodology('chart-pareto')}
+                title="How the Pareto SLA Breach Drivers chart works"
+                aria-label="Pareto SLA Breach Drivers Methodology"
+              >
+                <Info size={12} />
+              </button>
+              <button
+                type="button"
+                className="scope-badge-btn"
+                onClick={() => onOpenMethodology && onOpenMethodology('date-scoping')}
+                title="Click to learn about Closed + Open Overdue scoping"
+              >
                 📅 Scoped by Closed + Open Overdue
-              </span>
+              </button>
             </div>
             <p style={{ fontSize: '0.825rem', color: 'var(--text-muted)', marginTop: '2px' }}>
               Identifies the vital 20% of categories driving 80% of SLA breaches across both late completions and open past-due requests.
@@ -272,13 +286,27 @@ export default function ParetoChart({ requestsEffectiveSLA = [], requestsComplet
 
       {/* Target SLA vs Actual Days Comparison Chart (Full Width) */}
       <div className="glass-card">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '4px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 700 }}>
             <Clock size={18} /> TARGET SLA VS. ACTUAL RESOLUTION TIME (DAYS)
           </div>
-          <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', background: '#f1f5f9', padding: '2px 7px', borderRadius: '10px', border: '1px solid #e2e8f0', fontWeight: 600 }}>
+          <button
+            type="button"
+            className="info-icon-btn"
+            onClick={() => onOpenMethodology && onOpenMethodology('chart-sla-gap')}
+            title="How Target SLA vs. Actual Resolution Time is calculated"
+            aria-label="Target SLA vs Actual Resolution Time Methodology"
+          >
+            <Info size={12} />
+          </button>
+          <button
+            type="button"
+            className="scope-badge-btn"
+            onClick={() => onOpenMethodology && onOpenMethodology('date-scoping')}
+            title="Click to learn about Closed Date scoping"
+          >
             📅 Scoped by Closed Date
-          </span>
+          </button>
         </div>
         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
           Compares target SLA against actual days to resolution across completed requests in the selected window.
