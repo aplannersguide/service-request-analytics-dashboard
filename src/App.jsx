@@ -142,13 +142,16 @@ export default function App() {
   // Generic Toggle Handler
   const makeToggleHandler = (allOptions, setSelectedState) => (item) => {
     setSelectedState(prev => {
+      if (prev.includes('NONE')) {
+        return [item];
+      }
       if (prev.length === 0 || prev.includes('ALL')) {
         const allOthers = allOptions.filter(opt => opt !== item);
         return allOthers;
       }
       if (prev.includes(item)) {
         const next = prev.filter(opt => opt !== item);
-        return next.length === 0 ? [] : next;
+        return next.length === 0 ? ['NONE'] : next;
       } else {
         const next = [...prev, item];
         return next.length === allOptions.length ? [] : next;
