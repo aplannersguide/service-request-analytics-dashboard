@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "predeploy": "npm run build",
+    "verify-dist": "node -e \"const fs=require('fs'),path=require('path');function scan(d){if(!fs.existsSync(d))return;for(const f of fs.readdirSync(d)){const p=path.join(d,f);if(fs.statSync(p).isDirectory())scan(p);else if(/\\.(csv|tsv|xlsx|zip)$/i.test(f)){console.error('SECURITY BLOCK: Data file found in build output:',p);process.exit(1);}}}scan('dist');console.log('Security check passed: zero data files in dist/');\"",
+    "predeploy": "npm run build && npm run verify-dist",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {

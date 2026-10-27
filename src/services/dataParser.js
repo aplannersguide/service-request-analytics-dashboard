@@ -1,19 +1,61 @@
 import Papa from 'papaparse';
 
 /**
- * Reads a File object handling UTF-16 / UTF-8 auto-detection
+ * Allowed analytical columns for Data Minimization.
+ * Unused spatial/location/metadata columns (e.g. Location, X, Y, Well Known ID, Layer IDs)
+ * are stripped upon ingest so they are never retained in memory or browser storage.
+ */
+const ALLOWED_CSV_KEYS = new Set([
+  // Request ID variants
+  'Request ID', 'Request_ID', 'RequestId', 'SR ID', 'Ticket ID', 'ID',
+  // Service Request fields
+  'Service Request Type', 'Service_Request_Type',
+  'Description',
+  'Service Status', 'Service_Status', 'Status',
+  'Service Owner Group', 'Service_Owner_Group', 'Unit',
+  'Service Owner', 'Service_Owner', 'Assignee',
+  'Priority',
+  'Submission Type',
+  'Follow-ups', 'Follow_ups', 'FollowUps',
+  'Opened Date', 'Opened_Date', 'Created Date',
+  'Due Date', 'Due_Date', 'Target Date',
+  'Closed Date', 'Closed_Date', 'Completed Date',
+  // Survey fields
+  'Question', 'Survey Question', 'Prompt',
+  'Answer', 'Response', 'Rating', 'Score', 'Value',
+  'Submitted Date', 'Submitted_Date', 'Survey Date', 'Date'
+]);
+
+/**
+ * Strips any column not explicitly required for dashboard analytics (Data Minimization)
+ */
+export function sanitizeRawRow(row) {
+  if (!row || typeof row !== 'object') return {};
+  const cleanRow = {};
+  Object.keys(row).forEach((key) => {
+    const trimmedKey = key.trim();
+    if (ALLOWED_CSV_KEYS.has(trimmedKey)) {
+      cleanRow[trimmedKey] = row[key];
+    }
+  });
+  return cleanRow;
+}
+
+/**
+ * Reads a File object handling UTF-16 / UTF-8 auto-detection.
+ * Slices only the first 2 bytes for BOM detection to avoid double-buffering large files in memory.
  */
 export function readFileAsText(file) {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
+    const bomReader = new FileReader();
 
-    reader.onload = (e) => {
-      let buffer = e.target.result;
+    bomReader.onload = (e) => {
+      const buffer = e.target.result;
       const view = new DataView(buffer);
       
       let encoding = 'utf-8';
       
-      // Check Byte Order Mark (BOM) for UTF-16
+      // Check Byte Order Mark (BOM) for UTF-16 in the 2-byte slice
       if (buffer.byteLength >= 2) {
         const bom = view.getUint16(0, false);
         if (bom === 0xFEFF || bom === 0xFFFE) {
@@ -27,13 +69,13 @@ export function readFileAsText(file) {
       textReader.readAsText(file, encoding);
     };
 
-    reader.onerror = (err) => reject(err);
-    reader.readAsArrayBuffer(file);
+    bomReader.onerror = (err) => reject(err);
+    bomReader.readAsArrayBuffer(file.slice(0, 2));
   });
 }
 
 /**
- * Parses raw CSV/TSV text string
+ * Parses raw CSV/TSV text string and enforces column whitelisting
  */
 export function parseRawCSVText(text) {
   const firstLine = text.split('\n')[0] || '';
@@ -45,7 +87,7 @@ export function parseRawCSVText(text) {
     delimiter: delimiter
   });
 
-  return result.data;
+  return Array.isArray(result.data) ? result.data.map(sanitizeRawRow) : [];
 }
 
 /**
@@ -123,12 +165,9 @@ export function processRawDatasets(rawRequests, rawSurveys, asOfDate = null) {
           explanationScores: [],
           qualityScores: [],
           comments: [],
-          submittedDate: null,
-          raw: []
+          submittedDate: null
         };
       }
-
-      surveyMap[cleanedReqId].raw.push(row);
 
       if (submittedDate) {
         if (!surveyMap[cleanedReqId].submittedDate || submittedDate > surveyMap[cleanedReqId].submittedDate) {
@@ -283,8 +322,7 @@ export function processRawDatasets(rawRequests, rawSurveys, asOfDate = null) {
       breachType,
       csatScore: survey.avgCSAT,
       csatDimensions: survey.dimensions,
-      comments: survey.comments,
-      rawRequest: row
+      comments: survey.comments
     });
   });
 

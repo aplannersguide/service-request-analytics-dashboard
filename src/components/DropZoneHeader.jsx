@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { UploadCloud, RefreshCw, Database, FileSpreadsheet, CheckCircle, AlertCircle, BookOpen } from 'lucide-react';
+import { UploadCloud, RefreshCw, Database, FileSpreadsheet, CheckCircle, AlertCircle, BookOpen, ShieldCheck } from 'lucide-react';
 import { readFileAsText, parseRawCSVText } from '../services/dataParser';
+
+const MAX_FILE_SIZE_MB = 75;
+const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, asOfDate, onDataLoaded, onResetDemo, onOpenMethodology }) {
   const [isDragging, setIsDragging] = useState(false);
@@ -46,6 +49,9 @@ export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, 
 
     try {
       for (const file of files) {
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+          throw new Error(`File "${file.name}" exceeds the ${MAX_FILE_SIZE_MB}MB browser memory safety limit.`);
+        }
         const text = await readFileAsText(file);
         const parsed = parseRawCSVText(text);
         const fileName = file.name.toLowerCase();
@@ -121,6 +127,15 @@ export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, 
               title="Click to view how the Data As-Of snapshot anchor and date scoping work"
             >
               📅 Data As Of: {formattedAsOfDate}
+            </button>
+            <button
+              type="button"
+              className="scope-badge-btn"
+              style={{ fontSize: '0.78rem', padding: '4px 10px', borderRadius: '12px', color: 'var(--status-success)', background: 'rgba(21, 128, 61, 0.08)', borderColor: 'rgba(21, 128, 61, 0.25)', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
+              onClick={() => onOpenMethodology && onOpenMethodology('hierarchy-glossary')}
+              title="Click to view Client-Side Security, Data Minimization & 12-Hour Auto-Purge details"
+            >
+              <ShieldCheck size={13} /> Local Browser Only (Zero Cloud Upload)
             </button>
           </div>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '4px' }}>
