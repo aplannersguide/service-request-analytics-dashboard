@@ -29,7 +29,7 @@ When opened for the first time (or after clicking **Reset to Demo**), the applic
 
 ### B. Local File Ingestion & Memory Safety
 When an authorized user drags and drops `Service Requests.csv` and/or `Service Request Surveys.csv` into [`src/components/DropZoneHeader.jsx`](./src/components/DropZoneHeader.jsx):
-1. **File Size Guardrail:** Files exceeding **75 MB** (`MAX_FILE_SIZE_BYTES`) are rejected prior to reading to prevent browser tab memory exhaustion.
+1. **File Size Guardrail:** Files exceeding **250 MB** (`MAX_FILE_SIZE_BYTES`) are rejected prior to reading to prevent browser tab memory exhaustion.
 2. **2-Byte BOM Slicing:** [`readFileAsText()`](./src/services/dataParser.js) slices only the first 2 bytes (`file.slice(0, 2)`) via `FileReader` to auto-detect UTF-16 vs. UTF-8 encoding without double-buffering the file in memory.
 3. **Strict Column Whitelisting (Data Minimization):** [`sanitizeRawRow()`](./src/services/dataParser.js) immediately strips non-essential spatial, address, and GIS columns (such as `Location`, `X`, `Y`, `Well Known ID`, `Layer IDs`, `Police Precincts`, and `Council Districts`). Only the explicit columns required for SLA, backlog, and CSAT calculations (`ALLOWED_CSV_KEYS`) are retained in memory or local storage.
 

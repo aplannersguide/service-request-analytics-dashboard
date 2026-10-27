@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { UploadCloud, RefreshCw, Database, FileSpreadsheet, CheckCircle, AlertCircle, BookOpen, ShieldCheck } from 'lucide-react';
 import { readFileAsText, parseRawCSVText } from '../services/dataParser';
 
-const MAX_FILE_SIZE_MB = 75;
+const MAX_FILE_SIZE_MB = 250;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, asOfDate, onDataLoaded, onResetDemo, onOpenMethodology }) {

@@ -409,7 +409,7 @@ export default function MethodologyModal({ isOpen, focusSectionId, onClose }) {
           <div className="formula-box" style={{ marginTop: '4px', flexDirection: 'row', alignItems: 'center', gap: '10px' }}>
             <CheckCircle2 size={18} style={{ color: 'var(--status-success)', flexShrink: 0 }} />
             <span style={{ fontSize: '0.8rem' }}>
-              <strong>100% Client-Side Data Privacy & Security Hardening:</strong> Uploaded CSV/TSV files (UTF-16 and UTF-8, up to 75MB) are processed exclusively inside your local browser memory. A strict Content Security Policy (<code>connect-src 'none'</code>) blocks all outbound network connections; non-essential GIS/address columns (<code>Location</code>, <code>X</code>, <code>Y</code>) are stripped upon ingest; and local <code>IndexedDB</code> cache automatically expires after 12 hours to protect shared workstations.
+              <strong>100% Client-Side Data Privacy & Security Hardening:</strong> Uploaded CSV/TSV files (UTF-16 and UTF-8, up to 250MB) are processed exclusively inside your local browser memory. A strict Content Security Policy (<code>connect-src 'none'</code>) blocks all outbound network connections; non-essential GIS/address columns (<code>Location</code>, <code>X</code>, <code>Y</code>) are stripped upon ingest; and local <code>IndexedDB</code> cache automatically expires after 12 hours to protect shared workstations.
             </span>
           </div>
         </section>

@@ -78,7 +78,8 @@ export function readFileAsText(file) {
  * Parses raw CSV/TSV text string and enforces column whitelisting
  */
 export function parseRawCSVText(text) {
-  const firstLine = text.split('\n')[0] || '';
+  const newlineIdx = text.indexOf('\n');
+  const firstLine = newlineIdx !== -1 ? text.slice(0, newlineIdx) : text;
   const delimiter = firstLine.includes('\t') ? '\t' : ',';
 
   const result = Papa.parse(text, {
