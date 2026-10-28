@@ -329,3 +329,83 @@ export function processRawDatasets(rawRequests, rawSurveys, asOfDate = null) {
 
   return processedRequests;
 }
+
+/**
+ * Triggers a browser download of a UTF-8 BOM CSV file for seamless Microsoft Excel opening
+ */
+function triggerCSVDownload(csvText, filenamePrefix, recordCount) {
+  const dateStamp = new Date().toISOString().slice(0, 10);
+  const safePrefix = String(filenamePrefix || 'RVA_311_Export').replace(/[^a-zA-Z0-9_-]/g, '_');
+  const filename = `${safePrefix}_${recordCount}-records_${dateStamp}.csv`;
+
+  const blob = new Blob(['\uFEFF' + csvText], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Exports an array of processed Service Requests as a pre-joined Enriched Action Sheet CSV
+ */
+export function exportRequestsToCSV(requests = [], filenamePrefix = 'RVA_311_Service_Requests') {
+  if (!Array.isArray(requests) || requests.length === 0) return;
+
+  const rows = requests.map(r => ({
+    'Request ID': r.id || '',
+    'Department': r.department || '',
+    'Owner Group': r.ownerGroup || '',
+    'Service Owner': r.owner || '',
+    'Service Request Type': r.serviceType || '',
+    'Priority': r.priority || '',
+    'Service Status': r.status || '',
+    'Opened Date': r.openedDate ? r.openedDate.toLocaleString() : '',
+    'Due Date': r.dueDate ? r.dueDate.toLocaleString() : '',
+    'Closed Date': r.closedDate ? r.closedDate.toLocaleString() : '',
+    'SLA Breach Status': r.breachType || '',
+    'Target SLA (Days)': r.targetSLADays !== null && r.targetSLADays !== undefined ? Number(r.targetSLADays.toFixed(1)) : '',
+    'Actual Resolution (Days)': r.resolutionDays !== null && r.resolutionDays !== undefined ? Number(r.resolutionDays.toFixed(1)) : '',
+    'Backlog Age (Days)': r.backlogAgeDays !== null && r.backlogAgeDays !== undefined ? Math.round(r.backlogAgeDays) : '',
+    'Follow-Up Count': r.followUps ?? 0,
+    'Composite CSAT (1-5)': r.csatScore ?? '',
+    'Overall Satisfaction (1-5)': r.csatDimensions?.overall ?? '',
+    'Process Explanation (1-5)': r.csatDimensions?.explanation ?? '',
+    'Service Quality (1-5)': r.csatDimensions?.quality ?? '',
+    'Survey Submitted Date': r.surveyDate ? r.surveyDate.toLocaleString() : '',
+    'Resident Survey Comments': Array.isArray(r.comments) ? r.comments.join(' | ') : '',
+    'Request Description': r.description || ''
+  }));
+
+  const csvText = Papa.unparse(rows);
+  triggerCSVDownload(csvText, filenamePrefix, rows.length);
+}
+
+/**
+ * Exports filtered Customer Survey Feedback items as an Enriched CSAT Feedback CSV
+ */
+export function exportFeedbackCommentsToCSV(commentItems = [], filenamePrefix = 'RVA_311_CSAT_Feedback') {
+  if (!Array.isArray(commentItems) || commentItems.length === 0) return;
+
+  const rows = commentItems.map(item => ({
+    'Request ID': item.reqId || '',
+    'Department': item.dept || '',
+    'Owner Group': item.ownerGroup || '',
+    'Service Owner': item.owner || '',
+    'Service Request Type': item.type || '',
+    'Survey / Closed Date': item.surveyDate ? item.surveyDate.toLocaleString() : '',
+    'Follow-Up Count': item.followUps ?? 0,
+    'Composite CSAT (1-5)': item.csat ?? '',
+    'Overall Satisfaction (1-5)': item.dimensions?.overall ?? '',
+    'Process Explanation (1-5)': item.dimensions?.explanation ?? '',
+    'Service Quality (1-5)': item.dimensions?.quality ?? '',
+    'SLA Breach Status': item.breachType || '',
+    'Resident Survey Comment': item.comment || ''
+  }));
+
+  const csvText = Papa.unparse(rows);
+  triggerCSVDownload(csvText, filenamePrefix, rows.length);
+}

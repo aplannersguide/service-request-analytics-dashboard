@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Star, MessageSquare, Search, Award, AlertTriangle, Filter, RotateCcw, X, Tag, RefreshCw, Info } from 'lucide-react';
+import { Star, MessageSquare, Search, Award, AlertTriangle, Filter, RotateCcw, X, Tag, RefreshCw, Info, Download } from 'lucide-react';
+import { exportFeedbackCommentsToCSV } from '../services/dataParser';
 
 export default function CSATAnalysis({ requests, onOpenMethodology }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -126,9 +127,13 @@ export default function CSATAnalysis({ requests, onOpenMethodology }) {
           reqId: r.id,
           dept: r.department,
           ownerGroup: r.ownerGroup,
+          owner: r.owner,
           type: r.serviceType,
           fullTypeLabel: `${r.department} - ${r.serviceType}`,
           csat: r.csatScore,
+          dimensions: r.csatDimensions,
+          surveyDate: r.surveyDate,
+          breachType: r.breachType,
           followUps: r.followUps || 0,
           comment: c
         });
@@ -509,16 +514,29 @@ export default function CSATAnalysis({ requests, onOpenMethodology }) {
             </p>
           </div>
 
-          <div style={{ position: 'relative', width: '280px' }}>
-            <Search size={15} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
-            <input
-              type="text"
-              className="text-input"
-              placeholder="Search feedback text, request #..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ width: '100%', paddingLeft: '32px', fontSize: '0.825rem' }}
-            />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative', width: '280px' }}>
+              <Search size={15} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-dim)' }} />
+              <input
+                type="text"
+                className="text-input"
+                placeholder="Search feedback text, request #..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{ width: '100%', paddingLeft: '32px', fontSize: '0.825rem' }}
+              />
+            </div>
+
+            <button
+              type="button"
+              className="btn btn-outline"
+              disabled={filteredComments.length === 0}
+              onClick={() => exportFeedbackCommentsToCSV(filteredComments, 'RVA_311_CSAT_Feedback')}
+              style={{ padding: '7px 12px', fontSize: '0.78rem', opacity: filteredComments.length === 0 ? 0.5 : 1 }}
+              title="Download all matching survey feedback comments and dimension scores as a CSV file"
+            >
+              <Download size={13} /> Export Feedback CSV ({filteredComments.length})
+            </button>
           </div>
         </div>
 

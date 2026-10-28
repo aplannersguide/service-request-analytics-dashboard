@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Clock, AlertOctagon, UserCheck, ShieldAlert, Layers, RotateCcw, Filter, X, CheckCircle2, Info } from 'lucide-react';
+import { Clock, AlertOctagon, UserCheck, ShieldAlert, Layers, RotateCcw, Filter, X, CheckCircle2, Info, Download } from 'lucide-react';
+import { exportRequestsToCSV } from '../services/dataParser';
 
 export default function BacklogAnalysis({ requests, onOpenMethodology }) {
   const backlogRequests = requests.filter(r => r.isBacklog);
@@ -396,9 +397,21 @@ export default function BacklogAnalysis({ requests, onOpenMethodology }) {
             </span>
           </div>
 
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-            Showing all matching active backlog requests ranked by age
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              Showing all matching active backlog requests ranked by age
+            </span>
+            <button
+              type="button"
+              className="btn btn-outline"
+              disabled={filteredBacklogItems.length === 0}
+              onClick={() => exportRequestsToCSV(filteredBacklogItems, 'RVA_311_Active_Backlog')}
+              style={{ padding: '5px 12px', fontSize: '0.78rem', opacity: filteredBacklogItems.length === 0 ? 0.5 : 1 }}
+              title="Download all matching backlog records as a CSV file"
+            >
+              <Download size={13} /> Export CSV ({filteredBacklogItems.length})
+            </button>
+          </div>
         </div>
 
         <div className="table-wrapper" style={{ maxHeight: '360px', overflowY: 'auto' }}>

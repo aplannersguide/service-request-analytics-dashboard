@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Search, FileText, X, CheckCircle, AlertTriangle, Star, ShieldAlert, Info } from 'lucide-react';
+import { Search, FileText, X, CheckCircle, AlertTriangle, Star, ShieldAlert, Info, Download } from 'lucide-react';
+import { exportRequestsToCSV } from '../services/dataParser';
 
 export default function RequestDataTable({ requests, onOpenMethodology }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -94,6 +95,17 @@ export default function RequestDataTable({ requests, onOpenMethodology }) {
               style={{ width: '100%', paddingLeft: '32px' }}
             />
           </div>
+
+          <button
+            type="button"
+            className="btn btn-outline"
+            disabled={filteredRequests.length === 0}
+            onClick={() => exportRequestsToCSV(filteredRequests, `RVA_311_Explorer_${statusFilter}`)}
+            style={{ padding: '7px 12px', fontSize: '0.8rem', opacity: filteredRequests.length === 0 ? 0.5 : 1 }}
+            title="Download all matching records in the current view as a CSV file"
+          >
+            <Download size={14} /> Export CSV ({filteredRequests.length})
+          </button>
         </div>
       </div>
 
