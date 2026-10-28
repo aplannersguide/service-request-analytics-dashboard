@@ -126,7 +126,7 @@ export default function KPICards({ requestsBacklog = [], requestsCompleted = [],
           </span>
           <span className={`badge ${parseFloat(effectiveSLAPct) >= 80 ? 'badge-success' : 'badge-danger'}`}>
             {parseFloat(effectiveSLAPct) >= 80 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-            {parseFloat(effectiveSLAPct) >= 80 ? 'On Target' : 'Below Goal'}
+            {parseFloat(effectiveSLAPct) >= 80 ? 'Meets 80% Goal' : 'Below 80% Goal'}
           </span>
           <span style={{ fontSize: '0.72rem', color: 'var(--rva-navy)', background: 'rgba(38, 70, 119, 0.08)', padding: '2px 7px', borderRadius: '8px', fontWeight: 600 }}>
             Closed-Only: {closedOnlySLAPct}%
