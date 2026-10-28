@@ -380,7 +380,7 @@ export function exportRequestsToCSV(requests = [], filenamePrefix = 'RVA_311_Ser
     'Request Description': r.description || ''
   }));
 
-  const csvText = Papa.unparse(rows);
+  const csvText = Papa.unparse(rows, { escapeFormulae: true });
   triggerCSVDownload(csvText, filenamePrefix, rows.length);
 }
 
@@ -406,6 +406,6 @@ export function exportFeedbackCommentsToCSV(commentItems = [], filenamePrefix = 
     'Resident Survey Comment': item.comment || ''
   }));
 
-  const csvText = Papa.unparse(rows);
+  const csvText = Papa.unparse(rows, { escapeFormulae: true });
   triggerCSVDownload(csvText, filenamePrefix, rows.length);
 }

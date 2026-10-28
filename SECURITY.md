@@ -38,9 +38,9 @@ When an authorized user drags and drops `Service Requests.csv` and/or `Service R
 - **Automatic 12-Hour TTL Purge:** Every stored dataset is wrapped with a `savedAt` timestamp and validated against `STORAGE_TTL_MS` (**12 hours**). When the dashboard loads after 12 hours, `getLocalData()` automatically purges `IndexedDB` and `localStorage` and reverts to synthetic demo data.
 - **Manual One-Click Purge:** Clicking **Reset to Demo** in the header immediately executes `clearLocalData()`, wiping `IndexedDB` and `localStorage`.
 
-### D. Cross-Site Scripting (XSS) Protection
-- All CSV text values (including free-text `Description` and survey `Answer` comments) are rendered exclusively through standard React JSX bindings, which automatically HTML-encode untrusted strings.
-- The codebase contains **zero** uses of `dangerouslySetInnerHTML`, `innerHTML`, `outerHTML`, `document.write()`, or `eval()`.
+### D. Cross-Site Scripting (XSS) & CSV Formula Injection (`CWE-1236`) Protection
+- **DOM / XSS Immunity:** All CSV text values (including free-text `Description` and survey `Answer` comments) are rendered exclusively through standard React JSX bindings, which automatically HTML-encode untrusted strings. The codebase contains **zero** uses of `dangerouslySetInnerHTML`, `innerHTML`, `outerHTML`, `document.write()`, or `eval()`.
+- **Local Enriched CSV Export & Spreadsheet Formula Escaping:** [`exportRequestsToCSV()`](./src/services/dataParser.js) and [`exportFeedbackCommentsToCSV()`](./src/services/dataParser.js) generate downloadable CSV files strictly in-browser via temporary `Blob` URLs (`URL.createObjectURL` followed immediately by `URL.revokeObjectURL`), sanitize download filenames (`replace(/[^a-zA-Z0-9_-]/g, '_')`), and enforce `Papa.unparse(rows, { escapeFormulae: true })` to neutralize leading spreadsheet formula triggers (`=`, `+`, `-`, `@`, `\t`, `\r`) when opened in Microsoft Excel.
 
 ---
 
