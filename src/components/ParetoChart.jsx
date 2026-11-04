@@ -152,17 +152,20 @@ export default function ParetoChart({ requestsEffectiveSLA = [], requestsComplet
     }
   };
 
-  // Target SLA vs. Actual Resolution Time Comparison Chart (Strictly Completed Requests)
+  // Target SLA vs. Actual Resolution Time Comparison Chart (Strictly Completed Requests, Top 10 by Breach Volume)
   const categoryTimeMap = {};
   requestsCompleted.forEach(r => {
     if (!r.isCompleted || r.targetSLADays === null || r.resolutionDays === null) return;
     const key = `${r.department} - ${r.serviceType}`;
     if (!categoryTimeMap[key]) {
-      categoryTimeMap[key] = { targetSum: 0, actualSum: 0, count: 0 };
+      categoryTimeMap[key] = { targetSum: 0, actualSum: 0, count: 0, breachCount: 0 };
     }
     categoryTimeMap[key].targetSum += r.targetSLADays;
     categoryTimeMap[key].actualSum += r.resolutionDays;
     categoryTimeMap[key].count++;
+    if (r.isSLABreached) {
+      categoryTimeMap[key].breachCount++;
+    }
   });
 
   const timeEntries = Object.entries(categoryTimeMap)
@@ -171,9 +174,11 @@ export default function ParetoChart({ requestsEffectiveSLA = [], requestsComplet
       category: key,
       avgTarget: parseFloat((data.targetSum / data.count).toFixed(1)),
       avgActual: parseFloat((data.actualSum / data.count).toFixed(1)),
-      gap: parseFloat(((data.actualSum / data.count) - (data.targetSum / data.count)).toFixed(1))
+      gap: parseFloat(((data.actualSum / data.count) - (data.targetSum / data.count)).toFixed(1)),
+      breachCount: data.breachCount,
+      completedCount: data.count
     }))
-    .sort((a, b) => b.gap - a.gap)
+    .sort((a, b) => (b.breachCount - a.breachCount) || (b.gap - a.gap))
     .slice(0, 10);
 
   const timeChartData = {
@@ -309,7 +314,7 @@ export default function ParetoChart({ requestsEffectiveSLA = [], requestsComplet
           </button>
         </div>
         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
-          Compares target SLA against actual days to resolution across completed requests in the selected window.
+          Compares average target SLA against actual days to resolution for the top 10 highest-breach service request types in the selected window.
         </p>
         <div style={{ height: '280px' }}>
           <Bar
@@ -317,7 +322,29 @@ export default function ParetoChart({ requestsEffectiveSLA = [], requestsComplet
             options={{
               responsive: true,
               maintainAspectRatio: false,
-              plugins: { legend: { position: 'top', labels: { color: '#282938', font: { size: 11, weight: '600' } } } },
+              plugins: {
+                legend: { position: 'top', labels: { color: '#282938', font: { size: 11, weight: '600' } } },
+                tooltip: {
+                  backgroundColor: '#ffffff',
+                  titleColor: '#264677',
+                  bodyColor: '#282938',
+                  borderColor: '#e2e8f0',
+                  borderWidth: 1,
+                  padding: 10,
+                  callbacks: {
+                    afterBody: (items) => {
+                      const idx = items?.[0]?.dataIndex;
+                      const entry = timeEntries[idx];
+                      if (!entry) return [];
+                      const gapSign = entry.gap > 0 ? `+${entry.gap}` : `${entry.gap}`;
+                      return [
+                        `Delay Gap: ${gapSign} days vs. SLA`,
+                        `Closed Breaches: ${entry.breachCount.toLocaleString()} of ${entry.completedCount.toLocaleString()} completed`
+                      ];
+                    }
+                  }
+                }
+              },
               scales: {
                 x: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569', font: { size: 11 }, maxRotation: 25 } },
                 y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#475569' } }

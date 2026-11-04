@@ -147,14 +147,14 @@ export default function MethodologyModal({ isOpen, focusSectionId, onClose }) {
         {/* SECTION 1: DATE SCOPING & SNAPSHOT ANCHOR */}
         <section data-section-id="date-scoping" className={cardClass('date-scoping')}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--rva-navy)', fontWeight: 800, fontSize: '1rem' }}>
-            <Calendar size={18} /> 1. Context-Aware Date Scoping & The "Data As Of" Anchor
+            <Calendar size={18} /> 1. Context-Aware Date Scoping & Dataset Date Range
           </div>
           <p style={{ fontSize: '0.875rem', color: 'var(--text-main)' }}>
             <strong>Why it matters:</strong> Applying a single timestamp filter across an entire 311 dashboard distorts operational reality—filtering everything by <em>Closed Date</em> zeroes out open backlog, while filtering everything by <em>Opened Date</em> hides long-standing stalled tickets (`30+ Days`) whenever a user selects <em>Last 30 Days</em>. Instead, when you choose a Date Range Window in the toolbar, the dashboard automatically evaluates each metric by its natural lifecycle timestamp:
           </p>
 
           <div className="formula-box">
-            <div><strong>📅 Data As Of (Snapshot Anchor):</strong> Automatically derived from the most recent <code>Opened Date</code>, <code>Closed Date</code>, or survey <code>Submitted Date</code> in the loaded dataset. Relative presets (<em>Last 30 Days</em>, <em>Last 90 Days</em>, <em>Last 365 Days</em>), backlog aging, and open SLA checks are anchored to this snapshot date.</div>
+            <div><strong>📅 Data Range & Snapshot Anchor:</strong> Automatically derived from the earliest and most recent valid <code>Opened Date</code>, <code>Closed Date</code>, or survey <code>Submitted Date</code> in the loaded dataset. The latest date in the range serves as the <strong>Snapshot Anchor</strong> for relative presets (<em>Last 30 Days</em>, <em>Last 90 Days</em>, <em>Last 365 Days</em>), backlog aging, and open SLA checks.</div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '12px', marginTop: '4px' }}>
@@ -290,11 +290,11 @@ export default function MethodologyModal({ isOpen, focusSectionId, onClose }) {
             <div data-section-id="chart-sla-gap" className={cardClass('chart-sla-gap')}>
               <strong style={{ color: 'var(--rva-navy)', fontSize: '0.9rem' }}>Target SLA vs. Actual Resolution Time (Days)</strong>
               <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
-                Compares the average promised SLA window against actual completion duration for the top 10 categories with the largest delay gap.
+                Compares the average promised SLA window against actual completion duration for the top 10 service request categories with the highest SLA breach volume.
               </p>
               <div className="formula-box">
-                <div>• <strong>Target SLA (Days):</strong> <code>(Due Date − Opened Date)</code> averaged across completed requests in that category.</div>
-                <div>• <strong>Delay Gap:</strong> <code>Avg Actual Resolution Days − Avg Target SLA Days</code> (sorted largest gap first).</div>
+                <div>• <strong>Top 10 Selection:</strong> Ranked by total completed SLA breach volume in the selected window (with delay gap as the tie-breaker) so high-impact categories are prioritized over single-ticket outliers.</div>
+                <div>• <strong>Target SLA vs. Actual (Days):</strong> Compares average <code>(Due Date − Opened Date)</code> against average <code>(Closed Date − Opened Date)</code> across completed requests in each category.</div>
               </div>
             </div>
 

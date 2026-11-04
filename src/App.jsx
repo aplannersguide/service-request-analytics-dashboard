@@ -9,7 +9,7 @@ import RequestDataTable from './components/RequestDataTable';
 import MethodologyModal from './components/MethodologyModal';
 
 import { generateMockDataset } from './services/mockData';
-import { processRawDatasets, computeDatasetAsOfDate } from './services/dataParser';
+import { processRawDatasets, computeDatasetDateRange } from './services/dataParser';
 import { saveLocalData, getLocalData, clearLocalData } from './services/storageService';
 import { BarChart3, Star, Clock, Table, BookOpen } from 'lucide-react';
 
@@ -83,9 +83,9 @@ export default function App() {
     setIsDemoData(false);
   };
 
-  // Dynamic Dataset As-Of Date (Snapshot Anchor)
-  const asOfDate = useMemo(() => {
-    return computeDatasetAsOfDate(rawRequests, rawSurveys);
+  // Dynamic Dataset Date Range & As-Of Date (Snapshot Anchor)
+  const { minDate: datasetStartDate, maxDate: asOfDate } = useMemo(() => {
+    return computeDatasetDateRange(rawRequests, rawSurveys);
   }, [rawRequests, rawSurveys]);
 
   // 1. Process raw items anchored to asOfDate
@@ -263,6 +263,7 @@ export default function App() {
         isDemoData={isDemoData}
         requestCount={processedRequests.length}
         surveyCount={rawSurveys.length}
+        datasetStartDate={datasetStartDate}
         asOfDate={asOfDate}
         onDataLoaded={handleCustomDataLoaded}
         onResetDemo={loadDemoDataset}

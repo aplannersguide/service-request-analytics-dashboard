@@ -115,29 +115,48 @@ export function extractDepartmentCode(reqId) {
 }
 
 /**
- * Dynamically derives the dataset As-Of Date from the latest valid timestamp
- * across rawRequests and rawSurveys (falls back to Aug 25, 2026 if none found).
+ * Dynamically derives the dataset earliest and latest valid timestamps
+ * across rawRequests and rawSurveys (ignores corrupted dates prior to 2000-01-01).
  */
-export function computeDatasetAsOfDate(rawRequests = [], rawSurveys = []) {
+export function computeDatasetDateRange(rawRequests = [], rawSurveys = []) {
+  const minValidEpoch = new Date(2000, 0, 1).getTime();
+  let minTime = Infinity;
   let maxTime = 0;
+
+  const trackDate = (d) => {
+    if (!d) return;
+    const t = d.getTime();
+    if (t >= minValidEpoch) {
+      if (t < minTime) minTime = t;
+      if (t > maxTime) maxTime = t;
+    }
+  };
 
   if (Array.isArray(rawRequests)) {
     rawRequests.forEach((row) => {
-      const opened = parseDate(row['Opened Date'] || row['Opened_Date'] || row['Created Date']);
-      const closed = parseDate(row['Closed Date'] || row['Closed_Date'] || row['Completed Date']);
-      if (opened && opened.getTime() > maxTime) maxTime = opened.getTime();
-      if (closed && closed.getTime() > maxTime) maxTime = closed.getTime();
+      trackDate(parseDate(row['Opened Date'] || row['Opened_Date'] || row['Created Date']));
+      trackDate(parseDate(row['Closed Date'] || row['Closed_Date'] || row['Completed Date']));
     });
   }
 
   if (Array.isArray(rawSurveys)) {
     rawSurveys.forEach((row) => {
-      const submitted = parseDate(row['Submitted Date'] || row['Submitted_Date'] || row['Survey Date'] || row['Date']);
-      if (submitted && submitted.getTime() > maxTime) maxTime = submitted.getTime();
+      trackDate(parseDate(row['Submitted Date'] || row['Submitted_Date'] || row['Survey Date'] || row['Date']));
     });
   }
 
-  return maxTime > 0 ? new Date(maxTime) : new Date(2026, 7, 25);
+  const maxDate = maxTime > 0 ? new Date(maxTime) : new Date(2026, 7, 25);
+  const minDate = minTime < Infinity ? new Date(minTime) : maxDate;
+
+  return { minDate, maxDate };
+}
+
+/**
+ * Dynamically derives the dataset As-Of Date from the latest valid timestamp
+ * across rawRequests and rawSurveys (falls back to Aug 25, 2026 if none found).
+ */
+export function computeDatasetAsOfDate(rawRequests = [], rawSurveys = []) {
+  return computeDatasetDateRange(rawRequests, rawSurveys).maxDate;
 }
 
 /**

@@ -5,14 +5,20 @@ import { readFileAsText, parseRawCSVText } from '../services/dataParser';
 const MAX_FILE_SIZE_MB = 250;
 const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
-export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, asOfDate, onDataLoaded, onResetDemo, onOpenMethodology }) {
+export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, datasetStartDate, asOfDate, onDataLoaded, onResetDemo, onOpenMethodology }) {
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
 
+  const formattedStartDate = datasetStartDate
+    ? datasetStartDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : null;
   const formattedAsOfDate = asOfDate
     ? asOfDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     : 'N/A';
+  const formattedDateRange = formattedStartDate && formattedStartDate !== formattedAsOfDate
+    ? `${formattedStartDate} – ${formattedAsOfDate}`
+    : formattedAsOfDate;
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -124,9 +130,9 @@ export default function DropZoneHeader({ isDemoData, requestCount, surveyCount, 
               className="scope-badge-btn"
               style={{ fontSize: '0.8rem', padding: '4px 10px', borderRadius: '12px', color: 'var(--rva-dark)', background: '#f8fafc', borderColor: '#cbd5e1' }}
               onClick={() => onOpenMethodology && onOpenMethodology('date-scoping')}
-              title="Click to view how the Data As-Of snapshot anchor and date scoping work"
+              title={`Full dataset span (${formattedDateRange}). Latest date (${formattedAsOfDate}) anchors relative date presets and open backlog aging. Click for methodology details.`}
             >
-              📅 Data As Of: {formattedAsOfDate}
+              📅 Data Range: {formattedDateRange}
             </button>
             <button
               type="button"
