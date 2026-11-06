@@ -129,44 +129,44 @@ export default function AnalysisGuide({ onNavigateTab }) {
         ))}
       </div>
 
+      {/* Core Principle Callout - Anchors All Sections */}
+      <div style={{
+        backgroundColor: '#F0F4F8',
+        border: '1px solid #7FB1E5',
+        borderRadius: 'var(--radius-md)',
+        padding: '20px 24px',
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: '16px'
+      }}>
+        <div style={{
+          backgroundColor: 'var(--rva-navy)',
+          color: '#ffffff',
+          borderRadius: '50%',
+          width: '40px',
+          height: '40px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+          marginTop: '2px'
+        }}>
+          <Compass size={22} />
+        </div>
+        <div>
+          <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--rva-navy)', margin: '0 0 4px 0' }}>
+            Core Principle: Data is a Compass to Guide Us, Not a Grade to Judge Us
+          </h3>
+          <p style={{ fontSize: '0.92rem', color: 'var(--text-main)', margin: 0, lineHeight: 1.55 }}>
+            <strong>The dashboard is a flashlight, not the whole picture.</strong> Numbers on a screen will never capture the complete reality of work on the street. They simply illuminate where to look next. Your goal when opening this dashboard isn’t to defend past numbers; it is to walk away with <strong>better questions</strong> for your team and <strong>focused, zero-cost actions</strong> to test.
+          </p>
+        </div>
+      </div>
+
       {/* SECTION 1: THE THREE PERFORMANCE QUESTIONS */}
       {activeMainSection === 'framework' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
-          {/* Core Principle Callout */}
-          <div style={{
-            backgroundColor: '#F0F4F8',
-            border: '1px solid #7FB1E5',
-            borderRadius: 'var(--radius-md)',
-            padding: '20px 24px',
-            display: 'flex',
-            alignItems: 'flex-start',
-            gap: '16px'
-          }}>
-            <div style={{
-              backgroundColor: 'var(--rva-navy)',
-              color: '#ffffff',
-              borderRadius: '50%',
-              width: '40px',
-              height: '40px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              marginTop: '2px'
-            }}>
-              <Compass size={22} />
-            </div>
-            <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--rva-navy)', margin: '0 0 4px 0' }}>
-                Core Principle: Data is a Compass to Guide Us, Not a Grade to Judge Us
-              </h3>
-              <p style={{ fontSize: '0.92rem', color: 'var(--text-main)', margin: 0, lineHeight: 1.55 }}>
-                <strong>The dashboard is a flashlight, not the whole picture.</strong> Numbers on a screen will never capture the complete reality of work on the street. They simply illuminate where to look next. Your goal when opening this dashboard isn’t to defend past numbers; it is to walk away with <strong>better questions</strong> for your team and <strong>focused, zero-cost actions</strong> to test.
-              </p>
-            </div>
-          </div>
-
           {/* Question Tabs Container */}
           <div style={{
             backgroundColor: '#ffffff',
@@ -395,11 +395,11 @@ export default function AnalysisGuide({ onNavigateTab }) {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <Star size={18} color="var(--rva-red)" />
                       <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--rva-dark)' }}>
-                        Listen to Resident Feedback
+                        Listen & Talk to Residents
                       </span>
                     </div>
                     <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
-                      Filter the <strong>CSAT Deep-Dive</strong> tab by 1-star ratings and high follow-up counts. Residents will tell you directly whether tickets were closed prematurely or communication broke down.
+                      Reviewing survey comments in the <strong>CSAT Deep-Dive</strong> tab is essential, but don't stop at numbers on a screen. <strong>Pick up the phone or speak directly with residents</strong> who gave 1-star ratings or submitted multiple follow-ups to hear their lived experience firsthand.
                     </p>
                   </div>
 
@@ -413,11 +413,11 @@ export default function AnalysisGuide({ onNavigateTab }) {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <Users size={18} color="var(--rva-navy)" />
                       <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--rva-dark)' }}>
-                        Go & See (Gemba Walk)
+                        Go, See and Listen
                       </span>
                     </div>
                     <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
-                      Export 5–10 tickets from the Data Explorer. Walk the dispatch process with your supervisors and frontline crew leads to observe the real workflow constraints.
+                      Export 5–10 tickets from the Data Explorer. Don't analyze only from behind a desk—walk the process and <strong>talk directly to frontline staff, crew leads, and dispatchers</strong> doing the physical work to understand the real day-to-day operational hurdles.
                     </p>
                   </div>
 
@@ -429,21 +429,30 @@ export default function AnalysisGuide({ onNavigateTab }) {
                   borderRadius: 'var(--radius-sm)',
                   padding: '16px 20px'
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                    <Lightbulb size={18} color="var(--status-warning)" />
-                    <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--rva-navy)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                      Municipal Case Study: The Premature Closure Dilemma
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Lightbulb size={18} color="var(--status-warning)" />
+                      <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--rva-navy)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        Root Cause Analysis: The 5 Whys (Finding "A" Root Cause)
+                      </span>
+                    </div>
+                    <span style={{ fontSize: '0.76rem', color: 'var(--text-dim)', fontStyle: 'italic' }}>
+                      Finding an actionable cause, not the only cause
                     </span>
                   </div>
 
+                  <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '0 0 10px 0', lineHeight: 1.45 }}>
+                    <strong>Key Insight:</strong> Asking <em>"Why?"</em> helps your team identify <strong>a</strong> root cause you can test and influence—not necessarily <strong>the</strong> single root cause. Complex municipal operations often have multiple contributing causes that will need to be addressed over time. Focus on uncovering a real, addressable bottleneck rather than hunting for one elusive silver bullet.
+                  </p>
+
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <div><strong>Signal:</strong> Street & Sign repair has 85% on-time completion, but CSAT is 2.1 stars with repeated follow-ups.</div>
+                    <div><strong>Case Study Signal:</strong> Street & Sign repair has 85% on-time completion, but CSAT is 2.1 stars with repeated follow-ups.</div>
                     <div><strong>Why #1?</strong> Residents report: <em>"The ticket says completed, but the stop sign is still knocked down."</em></div>
                     <div><strong>Why #2?</strong> The inspector closed the 311 ticket immediately after conducting the site inspection.</div>
                     <div><strong>Why #3?</strong> The job required an underground utility locate, so the inspector created an internal work order and closed 311.</div>
                     <div><strong>Why #4?</strong> Closing the 311 ticket automatically sent the resident an email saying "Your request is completed!"</div>
                     <div style={{ color: 'var(--rva-red)', fontWeight: 600 }}>
-                      <strong>Why #5 (Root Bottleneck):</strong> Our workflow treated "Internal Triage Finished" as "Citizen Problem Solved," leaving the resident in the dark.
+                      <strong>Why #5 (An Actionable Root Bottleneck):</strong> Our workflow treated "Internal Triage Finished" as "Citizen Problem Solved," leaving the resident in the dark.
                     </div>
                   </div>
                 </div>
@@ -616,7 +625,7 @@ export default function AnalysisGuide({ onNavigateTab }) {
               </div>
               <ul style={{ fontSize: '0.84rem', color: 'var(--text-main)', margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                 <li>Open the 311 Dashboard and filter to your Department/Owner Group.</li>
-                <li>Set the Date Window to 90 Days for broad context.</li>
+                <li>Set the Date Window to desired range.</li>
                 <li>Have a blank notepad ready for the 3-Part Briefing takeaways.</li>
               </ul>
             </div>
@@ -624,8 +633,13 @@ export default function AnalysisGuide({ onNavigateTab }) {
 
           {/* Step-by-Step Agenda Breakdown */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--rva-navy)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              The 20-Minute Huddle Agenda
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--rva-navy)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                Example Agenda for the 20-Minute Team Huddle
+              </div>
+              <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontStyle: 'italic' }}>
+                Adaptable template to fit your team's operational flow
+              </span>
             </div>
 
             {/* Phase 1 */}
