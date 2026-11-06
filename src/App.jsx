@@ -7,6 +7,7 @@ import CSATAnalysis from './components/CSATAnalysis';
 import BacklogAnalysis from './components/BacklogAnalysis';
 import RequestDataTable from './components/RequestDataTable';
 import MethodologyModal from './components/MethodologyModal';
+import AnalysisGuide from './components/AnalysisGuide';
 
 import { generateMockDataset } from './services/mockData';
 import { processRawDatasets, computeDatasetDateRange } from './services/dataParser';
@@ -335,9 +336,19 @@ export default function App() {
         >
           <Table size={16} /> Data Explorer ({filteredRequestsCombined.length})
         </button>
+        <button
+          className={`tab-btn ${activeTab === 'guide' ? 'active' : ''}`}
+          onClick={() => setActiveTab('guide')}
+        >
+          <BookOpen size={16} /> Analysis Guide
+        </button>
       </div>
 
       {/* Tab Panels */}
+      {activeTab === 'guide' && (
+        <AnalysisGuide onNavigateTab={(tab) => setActiveTab(tab)} />
+      )}
+
       {activeTab === 'pareto' && (
         <ParetoChart
           requestsEffectiveSLA={filteredRequestsEffectiveSLA}
