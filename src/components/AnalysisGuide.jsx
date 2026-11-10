@@ -103,7 +103,7 @@ export default function AnalysisGuide({ onNavigateTab }) {
       }}>
         {[
           { id: 'framework', label: '1. Three Performance Questions', icon: <Search size={15} /> },
-          { id: 'facilitator', label: '2. Facilitator Pre-Meeting Huddle (20 Min)', icon: <Users size={15} /> },
+          { id: 'facilitator', label: "2. Director's Pre-Meeting Huddle (30–60 mins)", icon: <Users size={15} /> },
           { id: 'briefing', label: '3. The 3-Part Briefing Standard', icon: <Award size={15} /> }
         ].map(section => (
           <button
@@ -260,10 +260,10 @@ export default function AnalysisGuide({ onNavigateTab }) {
                       {
                         key: 'sig1',
                         num: 'Signal 1',
-                        title: 'Trend Direction',
-                        desc: 'Is our overall Effective SLA rate trending up or down compared to last month/period?',
+                        title: 'Current SLA Attainment',
+                        desc: 'What is our current Effective SLA rate for this scoping window? (Note: The dashboard provides a point-in-time snapshot; multi-period trends are tracked in separate executive reports.)',
                         tab: 'pareto',
-                        btnText: 'View SLA Trends'
+                        btnText: 'Check Current SLA'
                       },
                       {
                         key: 'sig2',
@@ -433,26 +433,26 @@ export default function AnalysisGuide({ onNavigateTab }) {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <Lightbulb size={18} color="var(--status-warning)" />
                       <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--rva-navy)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                        Root Cause Analysis: The 5 Whys (Finding "A" Root Cause)
+                        Example: Root Cause Exploration Using the 5 Whys
                       </span>
                     </div>
                     <span style={{ fontSize: '0.76rem', color: 'var(--text-dim)', fontStyle: 'italic' }}>
-                      Finding an actionable cause, not the only cause
+                      A walkthrough example for your team
                     </span>
                   </div>
 
                   <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', margin: '0 0 10px 0', lineHeight: 1.45 }}>
-                    <strong>Key Insight:</strong> Asking <em>"Why?"</em> helps your team identify <strong>a</strong> root cause you can test and influence—not necessarily <strong>the</strong> single root cause. Complex municipal operations often have multiple contributing causes that will need to be addressed over time. Focus on uncovering a real, addressable bottleneck rather than hunting for one elusive silver bullet.
+                    <strong>Walkthrough Example:</strong> This example illustrates how you and your team can walk through a 5-Whys root cause exploration. Asking <em>"Why?"</em> helps your team uncover <strong>a</strong> root cause you can test and influence—not necessarily <strong>the</strong> single root cause. Complex municipal operations usually have multiple contributing causes that will need to be addressed over time. Focus on identifying an actionable cause within your team's control.
                   </p>
 
                   <div style={{ fontSize: '0.85rem', color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <div><strong>Case Study Signal:</strong> Street & Sign repair has 85% on-time completion, but CSAT is 2.1 stars with repeated follow-ups.</div>
+                    <div><strong>Example Signal:</strong> Street & Sign repair has 85% on-time completion, but CSAT is 2.1 stars with repeated follow-ups.</div>
                     <div><strong>Why #1?</strong> Residents report: <em>"The ticket says completed, but the stop sign is still knocked down."</em></div>
                     <div><strong>Why #2?</strong> The inspector closed the 311 ticket immediately after conducting the site inspection.</div>
                     <div><strong>Why #3?</strong> The job required an underground utility locate, so the inspector created an internal work order and closed 311.</div>
                     <div><strong>Why #4?</strong> Closing the 311 ticket automatically sent the resident an email saying "Your request is completed!"</div>
                     <div style={{ color: 'var(--rva-red)', fontWeight: 600 }}>
-                      <strong>Why #5 (An Actionable Root Bottleneck):</strong> Our workflow treated "Internal Triage Finished" as "Citizen Problem Solved," leaving the resident in the dark.
+                      <strong>Why #5 (An Actionable Root Cause):</strong> Our workflow treated "Internal Triage Finished" as "Citizen Problem Solved," leaving the resident in the dark.
                     </div>
                   </div>
                 </div>
@@ -499,7 +499,7 @@ export default function AnalysisGuide({ onNavigateTab }) {
                       Action Within Existing Resources
                     </h5>
                     <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
-                      Commit to testing changes with <strong>$0, 0 new hires, and no new technology</strong>: update closure notes, set daily 20-min unassigned queue clearings, or standardize dispatch rules.
+                      Commit to testing operational changes with <strong>no new money, no new hires, and no new technology</strong>: update closure notes, set daily 20-min unassigned queue clearings, or standardize dispatch rules.
                     </p>
                   </div>
 
@@ -511,10 +511,10 @@ export default function AnalysisGuide({ onNavigateTab }) {
                   }}>
                     <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--rva-navy)', textTransform: 'uppercase' }}>Accountability</span>
                     <h5 style={{ fontSize: '0.95rem', fontWeight: 700, margin: '4px 0 6px 0', color: 'var(--rva-dark)' }}>
-                      Who is Doing What by When?
+                      Accountability & Ongoing Follow-Through
                     </h5>
                     <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
-                      Never conclude a performance huddle with just a data observation. Conclude with a named lead, a date, and a specific 30-day operational test.
+                      It is critical not only to assign a task with clear ownership (*Who is doing what by when*), but to <strong>track it over time</strong>, checking progress regularly and making midstream adjustments as needed. If you just tell people what to do but never circle back or refine the approach when it isn't working, you will lose goodwill and staff participation very quickly.
                     </p>
                   </div>
 
@@ -577,7 +577,7 @@ export default function AnalysisGuide({ onNavigateTab }) {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--rva-navy)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                The Facilitator's Turnkey Playbook
+                The Director's Turnkey Playbook
               </div>
               <span style={{
                 fontSize: '0.78rem',
@@ -587,14 +587,14 @@ export default function AnalysisGuide({ onNavigateTab }) {
                 padding: '4px 12px',
                 borderRadius: '12px'
               }}>
-                Prep Routine: 20 Minutes Total
+                Time Commitment: 30–60 Mins
               </span>
             </div>
             <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--rva-dark)', margin: '4px 0 6px 0' }}>
-              Facilitator Guide: Preparing for Your Monthly SLA Performance Meeting
+              Director's Pre-Meeting Huddle (30–60 mins): Preparing for Your Monthly SLA Performance Meeting
             </h3>
             <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', margin: 0 }}>
-              A step-by-step meeting blueprint that any division head, supervisor, or manager can pick up and run with their operational leads.
+              A structured preparation playbook for directors and operational leads before presenting at the Monthly SLA Performance Meeting.
             </p>
           </div>
 
@@ -635,7 +635,7 @@ export default function AnalysisGuide({ onNavigateTab }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--rva-navy)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                Example Agenda for the 20-Minute Team Huddle
+                Example Agenda for the Director's Team Huddle (30–60 Mins)
               </div>
               <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)', fontStyle: 'italic' }}>
                 Adaptable template to fit your team's operational flow
@@ -652,20 +652,20 @@ export default function AnalysisGuide({ onNavigateTab }) {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ backgroundColor: 'var(--rva-navy)', color: '#ffffff', padding: '3px 8px', borderRadius: '4px', fontSize: '0.78rem', fontWeight: 700 }}>
-                    Minutes 00 – 05
+                    Phase 1 (10–15 Mins)
                   </span>
                   <strong style={{ fontSize: '0.98rem', color: 'var(--rva-dark)' }}>
-                    Phase 1: Spot the 4 Basic Signals
+                    Spot the 4 Basic Signals
                   </strong>
                 </div>
                 <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>Goal: Pick 1 priority category</span>
               </div>
 
               <div style={{ fontSize: '0.86rem', color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <div><strong>Screen Action:</strong> Toggle between 90 Days (trend) and 30 Days (recent momentum). Open the Pareto chart.</div>
-                <div><strong>Facilitator Prompts to Read:</strong></div>
+                <div><strong>Screen Action:</strong> Set the Date Range Window to desired range. Open the Pareto chart.</div>
+                <div><strong>Example Prompts to Read:</strong></div>
                 <div style={{ paddingLeft: '12px', fontStyle: 'italic', color: 'var(--text-muted)' }}>
-                  • "Is our overall Effective SLA rate trending up or down compared to last month?"<br />
+                  • "What is our current Effective SLA rate for this scoping window?"<br />
                   • "Are we meeting the City's 80% benchmark?"<br />
                   • "Looking at the tallest bars on the left in the Pareto chart, which 3–5 request types drive our breaches?"<br />
                   • "Where is there a wide gap between target SLA days and actual completion days?"
@@ -686,26 +686,26 @@ export default function AnalysisGuide({ onNavigateTab }) {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ backgroundColor: 'var(--rva-navy)', color: '#ffffff', padding: '3px 8px', borderRadius: '4px', fontSize: '0.78rem', fontWeight: 700 }}>
-                    Minutes 05 – 15
+                    Phase 2 (15–30 Mins)
                   </span>
                   <strong style={{ fontSize: '0.98rem', color: 'var(--rva-dark)' }}>
-                    Phase 2: Peel Back the Onion with a 5-Whys
+                    Peel Back the Onion with a 5-Whys
                   </strong>
                 </div>
-                <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>Goal: Find the root bottleneck</span>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>Goal: Find a root bottleneck</span>
               </div>
 
               <div style={{ fontSize: '0.86rem', color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div><strong>Screen Action:</strong> Click the #1 tallest Pareto bar to cross-filter. Jump to <strong>CSAT Deep-Dive</strong> and filter by 1-star ratings.</div>
-                <div><strong>Facilitator Prompts to Read:</strong></div>
+                <div><strong>Example Prompts to Read:</strong></div>
                 <div style={{ paddingLeft: '12px', fontStyle: 'italic', color: 'var(--text-muted)' }}>
-                  • "What are residents saying in their survey comments for this request type?"<br />
+                  • "What are residents saying in their survey comments for this request type? Have we talked to any of them directly?"<br />
                   • "Are residents submitting repeat follow-up tickets? Why?"<br />
                   • "Does what is logged in the system match what physically happens in the field?"<br />
                   • "Let's run a 5-Whys on that delay: Why did this step stall? What happened before that?"
                 </div>
                 <div style={{ marginTop: '4px', padding: '8px 12px', backgroundColor: '#F0FDF4', borderRadius: '4px', color: '#166534', fontSize: '0.8rem' }}>
-                  <strong>Output:</strong> Identify one root bottleneck (e.g., triage vs. resolution confusion, unassigned queues, or ambiguous status handoffs).
+                  <strong>Output:</strong> Identify a root bottleneck you can influence (e.g., triage vs. resolution confusion, unassigned queues, or ambiguous status handoffs).
                 </div>
               </div>
             </div>
@@ -720,10 +720,10 @@ export default function AnalysisGuide({ onNavigateTab }) {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <span style={{ backgroundColor: 'var(--rva-navy)', color: '#ffffff', padding: '3px 8px', borderRadius: '4px', fontSize: '0.78rem', fontWeight: 700 }}>
-                    Minutes 15 – 20
+                    Phase 3 (10–15 Mins)
                   </span>
                   <strong style={{ fontSize: '0.98rem', color: 'var(--rva-dark)' }}>
-                    Phase 3: Commit to a 30-Day Operational Test
+                    Commit to a 30-Day Operational Test & Identify Leadership Decisions
                   </strong>
                 </div>
                 <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>Goal: Who is doing what by when?</span>
@@ -731,11 +731,12 @@ export default function AnalysisGuide({ onNavigateTab }) {
 
               <div style={{ fontSize: '0.86rem', color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div><strong>Screen Action:</strong> Check the Data Explorer to see how tickets are routed and assigned.</div>
-                <div><strong>Facilitator Prompts to Read:</strong></div>
+                <div><strong>Example Prompts to Read:</strong></div>
                 <div style={{ paddingLeft: '12px', fontStyle: 'italic', color: 'var(--text-muted)' }}>
-                  • "What is one operational adjustment we can test this month with $0, zero new hires, and no new technology?"<br />
+                  • "What is one operational adjustment we can test this month with no new money, no new hires and no new technology?"<br />
                   • "Can we clarify closure notes? Can crew leads spend 20 minutes triaging unassigned tickets each morning?"<br />
-                  • "Who owns this test, and by what date will we check the dashboard to verify results?"
+                  • "Who owns this test, and by what date will we check back to verify and refine results?"<br />
+                  • "What broader decisions or cross-departmental coordination do we need to ask city leadership to decide on?"
                 </div>
                 <div style={{ marginTop: '4px', padding: '8px 12px', backgroundColor: '#EFF6FF', borderRadius: '4px', color: '#1E40AF', fontSize: '0.8rem' }}>
                   <strong>Meeting Closeout:</strong> Document the answers directly into the 3-Part Briefing format to present to Mayor Avula and CAO Donald.
@@ -925,22 +926,31 @@ export default function AnalysisGuide({ onNavigateTab }) {
             }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                 <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--rva-navy)', textTransform: 'uppercase' }}>
-                  Part 3: What We Are Testing Next (The 30-Day Operational Test)
+                  Part 3: What We Are Testing Next — And Leadership Decisions Needed
                 </span>
-                <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>Speaking Time: 1.5 Minutes</span>
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>Speaking Time: 2 Minutes</span>
               </div>
               <p style={{ fontSize: '0.86rem', color: 'var(--text-main)', margin: '0 0 10px 0' }}>
-                Present a clear, zero-cost operational adjustment you are testing this month using existing people, tools, and budget.
+                Present the 30-day operational test you are executing immediately with <strong>no new money, no new hires, and no new technology</strong>, while also surfacing broader systemic issues that require discussion and decisions from city leadership (such as budget reallocations, shifting service level agreements, or cross-departmental coordination).
               </p>
               <div style={{
                 backgroundColor: '#F8FAFC',
                 borderLeft: '4px solid var(--status-success)',
-                padding: '10px 14px',
+                padding: '12px 16px',
                 fontSize: '0.84rem',
                 color: 'var(--text-muted)',
-                fontStyle: 'italic'
+                lineHeight: 1.5
               }}>
-                <strong>Example Dialogue:</strong> "While long-term equipment upgrades follow normal budget cycles, we aren't waiting. Over the next 30 days, our dispatch lead is spending 20 minutes every morning triaging aged tickets, we've updated ticket notes to explain private brush citations within 24 hours, and we are batching boom truck dispatches geographically on Tuesdays and Thursdays. We will check the dashboard weekly to see if this moves us toward 80%."
+                <div style={{ marginBottom: '8px' }}>
+                  <strong style={{ color: 'var(--rva-dark)' }}>Example Dialogue (Immediate Test):</strong><br />
+                  "While we look at broader operational needs, we aren't waiting on external approval for our immediate steps. Over the next 30 days, we are testing three zero-cost adjustments with <strong>no new money, no new hires, and no new technology</strong>: (1) our dispatch lead is spending 20 minutes every morning triaging aged tickets; (2) we've updated ticket notes to explain citation timelines within 24 hours; and (3) we are batching specialized dispatches geographically on Tuesdays and Thursdays. We will track these weekly and adjust our approach if the needle isn't moving."
+                </div>
+                <div>
+                  <strong style={{ color: 'var(--rva-navy)' }}>Example Dialogue (Broader Leadership Decisions Needed):</strong><br />
+                  "However, to resolve this sustainably, there are two broader issues we need city leadership to discuss and decide on today:<br />
+                  • <em>Cross-Departmental Collaboration:</em> Alley clearance currently stalls across DPW and Code Enforcement handoffs. We need leadership alignment on establishing a single joint triage SOP.<br />
+                  • <em>SLA Target Recalibration:</em> The 10-day SLA was enacted prior to mandatory environmental locate laws; we recommend leadership review shifting the target to 15 days so our operational metrics reflect legal realities."
+                </div>
               </div>
             </div>
 
